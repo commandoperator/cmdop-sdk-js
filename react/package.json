@@ -1,0 +1,79 @@
+{
+  "name": "@cmdop/react",
+  "version": "0.1.2",
+  "description": "CMDOP SDK for React - Hooks and components for browser-based agent interaction",
+  "author": "CMDOP <dev@cmdop.com>",
+  "homepage": "https://cmdop.com/sdk/react/",
+  "documentation": "https://cmdop.com/docs/sdk/react/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commandoperator/cmdop-sdk-js.git",
+    "directory": "react"
+  },
+  "bugs": {
+    "url": "https://github.com/commandoperator/cmdop-sdk-js/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "check": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run --passWithNoTests",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@cmdop/core": "workspace:*",
+    "lucide-react": "^0.400.0",
+    "swr": "^2.3.8"
+  },
+  "optionalDependencies": {
+    "centrifuge": "^5.5.3"
+  },
+  "devDependencies": {
+    "@cmdop/eslint-config": "workspace:*",
+    "@cmdop/typescript-config": "workspace:*",
+    "@types/react": "^18.2.0 || ^19.0.0",
+    "@types/react-dom": "^18.2.0 || ^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "keywords": [
+    "cmdop",
+    "sdk",
+    "react",
+    "hooks",
+    "terminal",
+    "browser",
+    "chat",
+    "ai"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Turbo cache
+.turbo/
+
+# Publish temp
+devops/.tmp-publish/
+
+# GitHub clone (managed by devops/scripts/publish.js)
+devops/github/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+
+# Editor
+.idea/
+.vscode/

@@ -1,0 +1,16 @@
+version: v2
+plugins:
+  # ts-proto generates clean TypeScript with nice-grpc support
+  - local: protoc-gen-ts_proto
+    out: src/generated
+    opt:
+      - esModuleInterop=true
+      - outputServices=nice-grpc
+      - outputServices=generic-definitions
+      - useExactTypes=false
+      - snakeToCamel=true
+      - forceLong=string
+      - oneof=unions
+      - env=node
+inputs:
+  - directory: proto
