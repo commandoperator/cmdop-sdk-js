@@ -2,7 +2,7 @@
  * Local transport for connecting to cmdop_go agent via Unix socket / Named Pipe
  */
 
-import { createChannel, createClient, type Channel } from 'nice-grpc';
+import { createChannel, createClient } from 'nice-grpc';
 import { readFile, access, unlink } from 'fs/promises';
 import { constants } from 'fs';
 import { homedir, platform } from 'os';
@@ -11,42 +11,50 @@ import { ConnectionError } from '@cmdop/core';
 
 import {
   TerminalStreamingServiceDefinition,
-  type TerminalStreamingServiceClient,
-} from '../generated/service';
-import type {
-  Transport,
-  AgentInfo,
-  LocalTransportOptions,
-} from './types';
+} from '../proto/generated/service';
+import type { AgentInfo, LocalTransportOptions } from './types';
 import { DEFAULT_CHANNEL_OPTIONS, DISCOVERY_PATHS } from './types';
+import { BaseTransport } from './base';
 
 /**
  * Local transport for IPC connection to local agent
  */
-export class LocalTransport implements Transport {
-  private _channel: Channel | null = null;
-  private _client: TerminalStreamingServiceClient | null = null;
-  private _address: string;
+export class LocalTransport extends BaseTransport {
   private _token: string | null = null;
   private _agentInfo: AgentInfo | null = null;
 
   private constructor(address: string, token?: string) {
-    this._address = address;
+    super(formatSocketAddress(address));
     this._token = token ?? null;
+  }
+
+  /**
+   * Create a LocalTransport synchronously using explicit options.
+   * Uses socketPath from options, or falls back to CMDOP_SOCKET_PATH env var,
+   * or the first default discovery path.
+   *
+   * Connection is lazy — actual gRPC channel is created on first use.
+   * Use discover() for full agent validation (ping check, token loading).
+   */
+  static fromOptions(options: LocalTransportOptions = {}): LocalTransport {
+    const socketPath =
+      options.socketPath ??
+      process.env['CMDOP_SOCKET_PATH'] ??
+      DISCOVERY_PATHS[0] ??
+      `${process.env['HOME']}/.cmdop/agent.sock`;
+    return new LocalTransport(socketPath);
   }
 
   /**
    * Discover and connect to local agent
    */
   static async discover(options: LocalTransportOptions = {}): Promise<LocalTransport> {
-    // If socket path is provided directly, use it
     if (options.socketPath) {
       const transport = new LocalTransport(options.socketPath);
       await transport.connect();
       return transport;
     }
 
-    // Otherwise, discover via agent.info file
     const discoveryPath = options.discoveryPath ?? await findDiscoveryFile();
     if (!discoveryPath) {
       throw new ConnectionError(
@@ -56,10 +64,8 @@ export class LocalTransport implements Transport {
 
     const agentInfo = await readAgentInfo(discoveryPath);
 
-    // Verify agent is alive
     const isAlive = await pingAgent(agentInfo.address);
     if (!isAlive) {
-      // Cleanup stale file
       try {
         await unlink(discoveryPath);
       } catch {
@@ -70,7 +76,6 @@ export class LocalTransport implements Transport {
       );
     }
 
-    // Read token if available
     let token: string | undefined;
     if (agentInfo.tokenPath) {
       try {
@@ -86,72 +91,18 @@ export class LocalTransport implements Transport {
     return transport;
   }
 
-  get channel(): Channel {
-    if (!this._channel) {
-      throw new ConnectionError('Transport not connected');
-    }
-    return this._channel;
-  }
-
-  get isConnected(): boolean {
-    return this._channel !== null;
-  }
-
-  get address(): string {
-    return this._address;
-  }
-
   get agentInfo(): AgentInfo | null {
     return this._agentInfo;
   }
 
-  async connect(): Promise<void> {
-    if (this._channel) {
-      return; // Already connected
-    }
-
-    const address = formatSocketAddress(this._address);
-    this._channel = createChannel(address, undefined, DEFAULT_CHANNEL_OPTIONS);
-  }
-
-  async close(): Promise<void> {
-    if (this._channel) {
-      this._channel.close();
-      this._channel = null;
-      this._client = null;
-    }
-  }
-
-  createClient(): TerminalStreamingServiceClient {
-    if (!this._client) {
-      this._client = createClient(TerminalStreamingServiceDefinition, this.channel);
-    }
-    return this._client;
-  }
-
-  /**
-   * Set agent ID (no-op for local transport)
-   * Local transport doesn't need routing since it connects directly to one agent.
-   */
-  setAgentId(_agentId: string): void {
-    // No-op for local transport
-  }
-
-  /**
-   * Explicit resource management (TypeScript 5.2+)
-   */
-  async [Symbol.asyncDispose](): Promise<void> {
-    await this.close();
-  }
+  /** No-op for local transport — connects directly to one agent */
+  setAgentId(_agentId: string): void {}
 }
 
 // ============================================================================
 // Discovery helpers
 // ============================================================================
 
-/**
- * Find the first available discovery file
- */
 async function findDiscoveryFile(): Promise<string | undefined> {
   for (const path of DISCOVERY_PATHS) {
     if (!path) continue;
@@ -165,46 +116,31 @@ async function findDiscoveryFile(): Promise<string | undefined> {
   return undefined;
 }
 
-/**
- * Read and parse agent.info file
- */
 async function readAgentInfo(path: string): Promise<AgentInfo> {
   try {
     const content = await readFile(path, 'utf-8');
     const info = JSON.parse(content) as AgentInfo;
-
-    // Expand ~ in tokenPath
     if (info.tokenPath?.startsWith('~')) {
       info.tokenPath = join(homedir(), info.tokenPath.slice(1));
     }
-
     return info;
   } catch (error) {
     throw new ConnectionError(`Failed to read agent info: ${path}`, error as Error);
   }
 }
 
-/**
- * Read authentication token from file
- */
 async function readToken(path: string): Promise<string> {
   const expandedPath = path.startsWith('~') ? join(homedir(), path.slice(1)) : path;
   const content = await readFile(expandedPath, 'utf-8');
   return content.trim();
 }
 
-/**
- * Check if agent is alive by attempting to connect
- */
 async function pingAgent(address: string): Promise<boolean> {
   try {
-    const formattedAddress = formatSocketAddress(address);
-    const channel = createChannel(formattedAddress, undefined, {
+    const channel = createChannel(formatSocketAddress(address), undefined, {
       'grpc.initial_reconnect_backoff_ms': 100,
       'grpc.max_reconnect_backoff_ms': 100,
     });
-
-    // Create client and try health check
     const client = createClient(TerminalStreamingServiceDefinition, channel);
     await client.healthCheck({});
     channel.close();
@@ -214,30 +150,18 @@ async function pingAgent(address: string): Promise<boolean> {
   }
 }
 
-/**
- * Format socket address for gRPC
- */
 function formatSocketAddress(address: string): string {
-  // Already formatted
   if (address.startsWith('unix:') || address.startsWith('dns:')) {
     return address;
   }
-
-  // Unix socket path
   if (address.startsWith('/') || address.startsWith('.')) {
     return `unix://${address}`;
   }
-
-  // Windows named pipe
   if (platform() === 'win32' && address.includes('pipe')) {
     return `unix://${address}`;
   }
-
-  // TCP address
   if (address.includes(':')) {
     return address;
   }
-
-  // Default to unix socket
   return `unix://${address}`;
 }

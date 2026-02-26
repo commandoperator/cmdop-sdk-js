@@ -3,161 +3,48 @@
  *
  * For local IPC, sessionId is not required (server ignores it).
  * For remote connections, use setSessionId() to set the active session.
- *
- * Example:
- *   // Local IPC - just use methods directly
- *   const files = await client.files.list('/tmp');
- *
- *   // Remote - set session first
- *   client.files.setSessionId(session.sessionId);
- *   const files = await client.files.list('/tmp');
  */
 
 import { CMDOPError } from '@cmdop/core';
-import type { TerminalStreamingServiceClient } from '../generated/service';
-import type { StreamFileEntry, StreamFileType } from '../generated/file_operations/common';
+import type { StreamFileEntry, StreamFileType } from '../proto/generated/file_operations/common';
+import { BaseService } from './base';
+import type {
+  FileEntry,
+  ListOptions,
+  ListResult,
+  ReadOptions,
+  ReadResult,
+  WriteOptions,
+  DeleteOptions,
+  CopyOptions,
+  MoveOptions,
+  SearchOptions,
+} from '../models/files';
 
-/**
- * File entry returned from list/stat operations
- */
-export interface FileEntry {
-  name: string;
-  path: string;
-  type: 'file' | 'directory' | 'symlink';
-  size: number;
-  permissions: string;
-  owner: string;
-  modifiedAt?: Date;
-  isHidden: boolean;
-  isReadable: boolean;
-  isWritable: boolean;
-  mimeType: string;
-  symlinkTarget?: string;
-}
+export type {
+  FileEntry,
+  ListOptions,
+  ListResult,
+  ReadOptions,
+  ReadResult,
+  WriteOptions,
+  DeleteOptions,
+  CopyOptions,
+  MoveOptions,
+  SearchOptions,
+} from '../models/files';
 
-/**
- * Options for listing directory
- */
-export interface ListOptions {
-  includeHidden?: boolean;
-  pageSize?: number;
-  pageToken?: string;
-}
-
-/**
- * Result from list operation
- */
-export interface ListResult {
-  entries: FileEntry[];
-  nextPageToken?: string;
-  totalCount: number;
-}
-
-/**
- * Options for reading file
- */
-export interface ReadOptions {
-  offset?: number;
-  length?: number;
-}
-
-/**
- * Result from read operation
- */
-export interface ReadResult {
-  content: Buffer;
-  encoding: string;
-  totalSize: number;
-  mimeType: string;
-  isTruncated: boolean;
-}
-
-/**
- * Options for writing file
- */
-export interface WriteOptions {
-  overwrite?: boolean;
-  createParents?: boolean;
-}
-
-/**
- * Options for delete operation
- */
-export interface DeleteOptions {
-  recursive?: boolean;
-}
-
-/**
- * Options for copy operation
- */
-export interface CopyOptions {
-  overwrite?: boolean;
-  recursive?: boolean;
-}
-
-/**
- * Options for move operation
- */
-export interface MoveOptions {
-  overwrite?: boolean;
-}
-
-/**
- * Options for search operation
- */
-export interface SearchOptions {
-  pattern: string;
-  recursive?: boolean;
-  includeHidden?: boolean;
-  maxResults?: number;
-}
-
-/**
- * Files service for file operations
- *
- * @example Local IPC (no session needed)
- * ```typescript
- * const files = await client.files.list('/tmp');
- * const content = await client.files.read('/etc/hosts');
- * ```
- *
- * @example Remote (session required)
- * ```typescript
- * client.files.setSessionId(session.sessionId);
- * const files = await client.files.list('/tmp');
- * ```
- */
-export class FilesService {
-  private _sessionId: string = '';
-
-  constructor(private readonly client: TerminalStreamingServiceClient) {}
-
-  /**
-   * Set session ID for remote operations.
-   * Not needed for local IPC.
-   */
-  setSessionId(sessionId: string): void {
-    this._sessionId = sessionId;
-  }
-
-  /**
-   * Get current session ID
-   */
-  getSessionId(): string {
-    return this._sessionId;
-  }
-
-  /**
-   * List directory contents
-   */
+export class FilesService extends BaseService {
   async list(path: string, options: ListOptions = {}): Promise<ListResult> {
-    const response = await this.client.fileListDirectory({
-      sessionId: this._sessionId,
-      path,
-      includeHidden: options.includeHidden ?? false,
-      pageSize: options.pageSize ?? 100,
-      pageToken: options.pageToken ?? '',
-    });
+    const response = await this.call(() =>
+      this.client.fileListDirectory({
+        sessionId: this._sessionId,
+        path,
+        includeHidden: options.includeHidden ?? false,
+        pageSize: options.pageSize ?? 100,
+        pageToken: options.pageToken ?? '',
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to list directory');
@@ -171,17 +58,16 @@ export class FilesService {
     };
   }
 
-  /**
-   * Read file contents
-   */
   async read(path: string, options: ReadOptions = {}): Promise<ReadResult> {
-    const response = await this.client.fileRead({
-      sessionId: this._sessionId,
-      path,
-      offset: String(options.offset ?? 0),
-      length: String(options.length ?? 0),
-      transcode: false,
-    });
+    const response = await this.call(() =>
+      this.client.fileRead({
+        sessionId: this._sessionId,
+        path,
+        offset: String(options.offset ?? 0),
+        length: String(options.length ?? 0),
+        transcode: false,
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to read file');
@@ -197,9 +83,6 @@ export class FilesService {
     };
   }
 
-  /**
-   * Write file contents
-   */
   async write(
     path: string,
     content: Buffer | string,
@@ -207,13 +90,15 @@ export class FilesService {
   ): Promise<{ bytesWritten: number; entry?: FileEntry }> {
     const buffer = typeof content === 'string' ? Buffer.from(content) : content;
 
-    const response = await this.client.fileWrite({
-      sessionId: this._sessionId,
-      path,
-      content: buffer,
-      overwrite: options.overwrite ?? false,
-      createParents: options.createParents ?? false,
-    });
+    const response = await this.call(() =>
+      this.client.fileWrite({
+        sessionId: this._sessionId,
+        path,
+        content: buffer,
+        overwrite: options.overwrite ?? false,
+        createParents: options.createParents ?? false,
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to write file');
@@ -226,18 +111,17 @@ export class FilesService {
     };
   }
 
-  /**
-   * Delete file or directory
-   */
   async delete(
     path: string,
     options: DeleteOptions = {}
   ): Promise<{ filesDeleted: number; dirsDeleted: number }> {
-    const response = await this.client.fileDelete({
-      sessionId: this._sessionId,
-      path,
-      recursive: options.recursive ?? false,
-    });
+    const response = await this.call(() =>
+      this.client.fileDelete({
+        sessionId: this._sessionId,
+        path,
+        recursive: options.recursive ?? false,
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to delete');
@@ -250,14 +134,10 @@ export class FilesService {
     };
   }
 
-  /**
-   * Get file/directory info
-   */
   async stat(path: string): Promise<FileEntry> {
-    const response = await this.client.fileGetInfo({
-      sessionId: this._sessionId,
-      path,
-    });
+    const response = await this.call(() =>
+      this.client.fileGetInfo({ sessionId: this._sessionId, path })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to get file info');
@@ -266,26 +146,23 @@ export class FilesService {
     return mapFileEntry(response.result!.entry!);
   }
 
-  /**
-   * Create directory
-   */
   async mkdir(path: string, options?: { recursive?: boolean }): Promise<FileEntry> {
-    const response = await this.client.fileCreateDirectory({
-      sessionId: this._sessionId,
-      path,
-      createParents: options?.recursive ?? false,
-    });
+    const response = await this.call(() =>
+      this.client.fileCreateDirectory({
+        sessionId: this._sessionId,
+        path,
+        createParents: options?.recursive ?? false,
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to create directory');
     }
 
-    // Handle response with or without entry
     if (response.result?.entry) {
       return mapFileEntry(response.result.entry);
     }
 
-    // Fallback: construct minimal entry from path
     const name = path.split('/').filter(Boolean).pop() || path;
     return {
       name,
@@ -301,20 +178,19 @@ export class FilesService {
     };
   }
 
-  /**
-   * Move file or directory
-   */
   async move(
     sourcePath: string,
     destinationPath: string,
     options: MoveOptions = {}
   ): Promise<FileEntry> {
-    const response = await this.client.fileMove({
-      sessionId: this._sessionId,
-      sourcePath,
-      destinationPath,
-      overwrite: options.overwrite ?? false,
-    });
+    const response = await this.call(() =>
+      this.client.fileMove({
+        sessionId: this._sessionId,
+        sourcePath,
+        destinationPath,
+        overwrite: options.overwrite ?? false,
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to move');
@@ -323,21 +199,20 @@ export class FilesService {
     return mapFileEntry(response.result!.entry!);
   }
 
-  /**
-   * Copy file or directory
-   */
   async copy(
     sourcePath: string,
     destinationPath: string,
     options: CopyOptions = {}
   ): Promise<{ entry: FileEntry; bytesCopied: number }> {
-    const response = await this.client.fileCopy({
-      sessionId: this._sessionId,
-      sourcePath,
-      destinationPath,
-      overwrite: options.overwrite ?? false,
-      recursive: options.recursive ?? false,
-    });
+    const response = await this.call(() =>
+      this.client.fileCopy({
+        sessionId: this._sessionId,
+        sourcePath,
+        destinationPath,
+        overwrite: options.overwrite ?? false,
+        recursive: options.recursive ?? false,
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to copy');
@@ -350,21 +225,20 @@ export class FilesService {
     };
   }
 
-  /**
-   * Search for files
-   */
   async search(path: string, options: SearchOptions): Promise<FileEntry[]> {
-    const response = await this.client.fileSearch({
-      sessionId: this._sessionId,
-      path,
-      filenamePattern: options.pattern,
-      contentPattern: '',
-      caseSensitive: false,
-      includeHidden: options.includeHidden ?? false,
-      maxResults: options.maxResults ?? 100,
-      maxDepth: options.recursive === false ? 1 : 0,
-      contextLines: 0,
-    });
+    const response = await this.call(() =>
+      this.client.fileSearch({
+        sessionId: this._sessionId,
+        path,
+        filenamePattern: options.pattern,
+        contentPattern: '',
+        caseSensitive: false,
+        includeHidden: options.includeHidden ?? false,
+        maxResults: options.maxResults ?? 100,
+        maxDepth: options.recursive === false ? 1 : 0,
+        contextLines: 0,
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to search');
@@ -373,21 +247,20 @@ export class FilesService {
     return response.result!.matches.filter((m) => m.entry).map((m) => mapFileEntry(m.entry!));
   }
 
-  /**
-   * Create archive (zip/tar)
-   */
   async archive(
     paths: string[],
     outputPath: string,
     options?: { format?: 'zip' | 'tar' | 'tar.gz'; includeHidden?: boolean }
   ): Promise<FileEntry> {
-    const response = await this.client.fileCreateArchive({
-      sessionId: this._sessionId,
-      sourcePaths: paths,
-      destinationPath: outputPath,
-      format: options?.format ?? 'zip',
-      includeHidden: options?.includeHidden ?? false,
-    });
+    const response = await this.call(() =>
+      this.client.fileCreateArchive({
+        sessionId: this._sessionId,
+        sourcePaths: paths,
+        destinationPath: outputPath,
+        format: options?.format ?? 'zip',
+        includeHidden: options?.includeHidden ?? false,
+      })
+    );
 
     if (!response.success) {
       throw new CMDOPError(response.error || 'Failed to create archive');
@@ -397,9 +270,6 @@ export class FilesService {
   }
 }
 
-/**
- * Map proto StreamFileEntry to SDK FileEntry
- */
 function mapFileEntry(entry: StreamFileEntry): FileEntry {
   return {
     name: entry.name,
@@ -417,14 +287,11 @@ function mapFileEntry(entry: StreamFileEntry): FileEntry {
   };
 }
 
-/**
- * Map proto StreamFileType to string
- */
 function mapFileType(type: StreamFileType): 'file' | 'directory' | 'symlink' {
   switch (type) {
-    case 2: // STREAM_DIRECTORY
+    case 2:
       return 'directory';
-    case 3: // STREAM_SYMLINK
+    case 3:
       return 'symlink';
     default:
       return 'file';

@@ -1,6 +1,6 @@
 {
   "name": "@cmdop/node",
-  "version": "0.1.2",
+  "version": "2026.02.26",
   "description": "CMDOP SDK for Node.js - Server-side agent interaction via gRPC",
   "author": "CMDOP <dev@cmdop.com>",
   "homepage": "https://cmdop.com/sdk/node/",
@@ -35,11 +35,11 @@
   "scripts": {
     "build": "pnpm run proto:gen && tsup",
     "dev": "tsup --watch",
-    "proto:gen": "buf generate proto --path proto/service.proto --path proto/tunnel.proto",
+    "proto:gen": "buf generate src/proto/protobuf --path src/proto/protobuf/service.proto --path src/proto/protobuf/tunnel.proto",
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest run",
-    "clean": "rm -rf dist src/generated",
+    "clean": "rm -rf dist src/proto/generated",
     "example:terminal": "tsx examples/local/terminal.ts",
     "example:files": "tsx examples/local/files.ts",
     "example:agent": "tsx examples/local/agent.ts",

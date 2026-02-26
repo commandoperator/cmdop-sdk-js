@@ -1,0 +1,104 @@
+{
+  "name": "@cmdop/bot",
+  "version": "2026.02.26",
+  "description": "CMDOP multi-channel bot integrations — Telegram, Discord, Slack, Teams, and more",
+  "author": "CMDOP <dev@cmdop.com>",
+  "homepage": "https://cmdop.com/sdk/bot/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commandoperator/cmdop-sdk-js.git",
+    "directory": "bot"
+  },
+  "bugs": {
+    "url": "https://github.com/commandoperator/cmdop-sdk-js/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "examples",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@cmdop/node": "workspace:*",
+    "zod": "^4"
+  },
+  "peerDependencies": {
+    "@microsoft/teams.ai": ">=2.0",
+    "@slack/bolt": ">=4.0",
+    "discord.js": ">=14.0",
+    "grammy": ">=1.30"
+  },
+  "peerDependenciesMeta": {
+    "grammy": {
+      "optional": true
+    },
+    "discord.js": {
+      "optional": true
+    },
+    "@slack/bolt": {
+      "optional": true
+    },
+    "@microsoft/teams.ai": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@cmdop/eslint-config": "workspace:*",
+    "@cmdop/typescript-config": "workspace:*",
+    "@discordjs/builders": "^1",
+    "@discordjs/rest": "^2",
+    "@grammyjs/transformer-throttler": "^1.2.1",
+    "@slack/bolt": "^4",
+    "@slack/web-api": "^7",
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "discord.js": "^14",
+    "grammy": "^1.40.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.3.0",
+    "vitest": "^2.0.0"
+  },
+  "keywords": [
+    "cmdop",
+    "bot",
+    "telegram",
+    "discord",
+    "slack",
+    "teams",
+    "agent",
+    "terminal"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

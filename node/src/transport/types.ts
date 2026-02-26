@@ -3,7 +3,7 @@
  */
 
 import type { Channel } from 'nice-grpc';
-import type { TerminalStreamingServiceClient } from '../generated/service';
+import type { TerminalStreamingServiceClient } from '../proto/generated/service';
 
 /**
  * Base transport interface for all connection types

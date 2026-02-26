@@ -4,6 +4,13 @@
  */
 
 // ============================================================================
+// Logging
+// ============================================================================
+
+export { logger } from './logging';
+export type { Logger, SdkLogLevel } from './logging';
+
+// ============================================================================
 // Re-export core types and errors
 // ============================================================================
 
@@ -17,11 +24,38 @@ export { z, zodToJsonSchema } from './schema';
 export type { ZodToJsonSchemaOptions, InferSchema } from './schema';
 
 // ============================================================================
-// Error mapping utilities
+// Error mapping utilities + extended error hierarchy
 // ============================================================================
 
 export { mapGrpcError, withErrorMapping } from './errors';
 export type { ErrorContext } from './errors';
+
+// Extended error classes (Node.js SDK-specific)
+export {
+  // Connection
+  AgentNotRunningError,
+  StalePortFileError,
+  ConnectionLostError,
+  // Auth
+  InvalidAPIKeyError,
+  TokenExpiredError,
+  // Agent
+  AgentError,
+  AgentOfflineError,
+  AgentBusyError,
+  FeatureNotAvailableError,
+  // Session
+  SessionInterruptedError,
+  // Files
+  FileTooLargeError,
+  // Browser
+  BrowserError,
+  BrowserSessionClosedError,
+  BrowserNavigationError,
+  BrowserElementNotFoundError,
+  // Rate limiting
+  RateLimitError,
+} from './errors';
 
 // ============================================================================
 // Client
@@ -31,10 +65,100 @@ export { CMDOPClient } from './client';
 export type { LocalClientOptions, RemoteClientOptions } from './client';
 
 // ============================================================================
+// Discovery
+// ============================================================================
+
+export { AgentDiscovery, listAgents, getOnlineAgents } from './discovery';
+export type { RemoteAgentInfo, AgentStatus } from './discovery';
+
+// ============================================================================
+// Config
+// ============================================================================
+
+export { getSettings, configure, resetSettings } from './config';
+export type { SDKSettings } from './config';
+
+// ============================================================================
+// Models (Zod schemas + inferred types)
+// ============================================================================
+
+export {
+  sdkObject,
+  // terminal
+  SessionStateSchema,
+  CreateSessionOptionsSchema,
+  ListSessionsOptionsSchema,
+  SessionInfoSchema,
+  SessionStatusInfoSchema,
+  SetMachineResultSchema,
+  OutputChunkSchema,
+  // files
+  FileTypeSchema,
+  FileEntrySchema,
+  ListOptionsSchema,
+  ListResultSchema,
+  ReadOptionsSchema,
+  ReadResultSchema,
+  WriteOptionsSchema,
+  DeleteOptionsSchema,
+  CopyOptionsSchema,
+  MoveOptionsSchema,
+  SearchOptionsSchema,
+  // agent
+  AgentModeSchema,
+  RunAgentOptionsSchema,
+  ToolResultSchema,
+  UsageSchema,
+  AgentResultSchema,
+  // config
+  ConnectionConfigSchema,
+  RetryConfigSchema,
+  KeepaliveConfigSchema,
+  CircuitBreakerConfigSchema,
+  // download
+  DownloadMetricsSchema,
+  DownloadResultSchema,
+} from './models';
+export type {
+  SessionState,
+  OutputChunk,
+  FileType,
+  ConnectionConfig,
+  RetryConfig,
+  KeepaliveConfig,
+  CircuitBreakerConfig,
+} from './models';
+
+// ============================================================================
+// Streaming
+// ============================================================================
+
+export { StreamState, AgentStream, TerminalStream } from './streaming';
+export type {
+  AgentStreamEvent,
+  AgentTokenEvent,
+  AgentToolStartEvent,
+  AgentToolEndEvent,
+  AgentThinkingEvent,
+  AgentErrorEvent,
+  AgentHandoffEvent,
+  AgentCancelledEvent,
+  AgentDoneEvent,
+  AgentStreamCallback,
+  TerminalStreamEvent,
+  TerminalOutputEvent,
+  TerminalStatusEvent,
+  TerminalErrorEvent,
+  TerminalStreamCallback,
+  TerminalStreamOptions,
+  StreamMetrics,
+} from './streaming';
+
+// ============================================================================
 // Transport layer
 // ============================================================================
 
-export { LocalTransport, RemoteTransport } from './transport';
+export { BaseTransport, LocalTransport, RemoteTransport } from './transport';
 export type {
   Transport,
   AgentInfo,
@@ -46,7 +170,7 @@ export type {
 // Services
 // ============================================================================
 
-export { TerminalService, FilesService, AgentService } from './services';
+export { BaseService, TerminalService, FilesService, AgentService, ExtractService, BrowserService, BrowserSession, DownloadService } from './services';
 export type {
   CreateSessionOptions,
   ListSessionsOptions,
@@ -69,6 +193,44 @@ export type {
   ToolResult,
   Usage,
   AgentResult,
+  // Terminal extra
+  SetMachineResult,
+  // Extract types
+  ExtractServiceOptions,
+  ExtractMetrics,
+  ExtractResult,
+  // Browser types
+  BrowserSessionOptions,
+  NavigateOptions,
+  ClickOptions,
+  TypeOptions,
+  WaitOptions,
+  BrowserExtractOptions,
+  ScreenshotOptions,
+  BrowserState,
+  ScrollOptions,
+  ScrollResult,
+  MouseMoveOptions,
+  HoverOptions,
+  PageInfo,
+  BrowserCookie,
+  GetCookiesOptions,
+  ExtractRegexOptions,
+  ExtractFieldDef,
+  ExtractDataOptions,
+  ExtractDataResult,
+  ValidateSelectorsOptions,
+  ValidateSelectorsResult,
+  NetworkEnableOptions,
+  NetworkGetExchangesOptions,
+  NetworkExchange,
+  NetworkStats,
+  NetworkExportHAROptions,
+  // Download types
+  DownloadResult,
+  DownloadMetrics,
+  DownloadFileOptions,
+  DownloadUrlOptions,
 } from './services';
 
 // ============================================================================
@@ -80,7 +242,7 @@ export {
   TerminalStreamingServiceDefinition,
   type TerminalStreamingServiceClient,
   type TerminalStreamingServiceImplementation,
-} from './generated/service';
+} from './proto/generated/service';
 
 // Common types
 export {
@@ -90,7 +252,7 @@ export {
   type TerminalSize,
   type SessionConfig,
   type SystemMetrics,
-} from './generated/common_types';
+} from './proto/generated/common_types';
 
 // Session messages
 export type {
@@ -103,7 +265,7 @@ export type {
   ListSessionsRequest,
   ListSessionsResponse,
   SessionInfoItem,
-} from './generated/rpc_messages/session';
+} from './proto/generated/rpc_messages/session';
 
 // Terminal messages
 export type {
@@ -113,4 +275,4 @@ export type {
   SendResizeResponse,
   SendSignalRequest,
   SendSignalResponse,
-} from './generated/rpc_messages/terminal';
+} from './proto/generated/rpc_messages/terminal';
