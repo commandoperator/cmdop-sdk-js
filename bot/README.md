@@ -1,6 +1,6 @@
 # @cmdop/bot
 
-Multi-channel bot framework for [CMDOP](https://cmdop.com) — run `/exec`, `/agent`, and `/files` commands from Telegram, Discord, and Slack.
+Multi-channel bot framework for [CMDOP](https://cmdop.com) — run `/exec`, `/agent`, `/skills`, and `/files` commands from Telegram, Discord, and Slack.
 
 ```
 pnpm add @cmdop/bot
@@ -19,7 +19,7 @@ await hub.addTelegram({ token: process.env.TELEGRAM_TOKEN });
 await hub.start();
 ```
 
-That's it. Your bot now responds to `/exec`, `/agent`, `/files`, and `/help`.
+That's it. Your bot now responds to `/exec`, `/agent`, `/skills`, `/files`, and `/help`.
 
 ---
 
@@ -76,6 +76,7 @@ Requires Socket Mode enabled in your Slack app settings. See [examples/slack.ts]
 |---------|-------|-------------------|
 | `/exec` | `/exec <shell command>` | `EXECUTE` |
 | `/agent` | `/agent <prompt>` | `EXECUTE` |
+| `/skills` | `/skills list \| show <name> \| run <name> <prompt>` | `EXECUTE` |
 | `/files` | `/files [read] <path>` | `READ` |
 | `/help` | `/help` | none |
 
@@ -102,7 +103,7 @@ Permission levels (ordered, each includes all levels below):
 |-------|--------|
 | `NONE` | No commands (only `/help`) |
 | `READ` | `/files` |
-| `EXECUTE` | `/exec`, `/agent` |
+| `EXECUTE` | `/exec`, `/agent`, `/skills` |
 | `FILES` | _(reserved for future write operations)_ |
 | `ADMIN` | All commands |
 

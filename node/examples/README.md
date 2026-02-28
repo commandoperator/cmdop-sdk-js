@@ -24,6 +24,7 @@ npm install @cmdop/node
 | [file_operations.ts](file_operations.ts) | Read, write, and list files on remote machines |
 | [fleet_status.ts](fleet_status.ts) | Check status of all connected machines |
 | [agent_structured.ts](agent_structured.ts) | AI agent with Zod structured output |
+| [skills.ts](skills.ts) | List, show, and run skills on remote machines |
 | [browser_automation.ts](browser_automation.ts) | Browser automation on remote machines |
 
 ## Configuration
@@ -43,5 +44,7 @@ pnpm tsx examples/terminal_ssh.ts
 pnpm tsx examples/fleet_status.ts
 pnpm tsx examples/file_operations.ts list /tmp
 pnpm tsx examples/agent_structured.ts
+pnpm tsx examples/skills.ts
+pnpm tsx examples/skills.ts run code-review "Review my code"
 pnpm tsx examples/browser_automation.ts https://example.com
 ```

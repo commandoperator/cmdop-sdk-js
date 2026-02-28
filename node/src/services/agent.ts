@@ -116,7 +116,7 @@ function mapAgentMode(mode: AgentMode): AgentType {
   }
 }
 
-function mapToolResult(result: ProtoAgentToolResult): ToolResult {
+export function mapToolResult(result: ProtoAgentToolResult): ToolResult {
   return {
     toolName: result.toolName,
     toolCallId: result.toolCallId,
@@ -127,7 +127,7 @@ function mapToolResult(result: ProtoAgentToolResult): ToolResult {
   };
 }
 
-function mapUsage(usage: ProtoAgentUsage): Usage {
+export function mapUsage(usage: ProtoAgentUsage): Usage {
   return {
     promptTokens: usage.promptTokens,
     completionTokens: usage.completionTokens,

@@ -14,6 +14,7 @@ import { AgentService } from './services/agent';
 import { ExtractService } from './services/extract';
 import { BrowserService } from './services/browser';
 import { DownloadService } from './services/download';
+import { SkillsService } from './services/skills';
 
 /**
  * Client options for local connection
@@ -53,6 +54,7 @@ export class CMDOPClient {
   private _extract: ExtractService | null = null;
   private _browser: BrowserService | null = null;
   private _download: DownloadService | null = null;
+  private _skills: SkillsService | null = null;
   private _sessionId: string = '';
 
   private constructor(transport: Transport) {
@@ -298,6 +300,19 @@ export class CMDOPClient {
     return this._download;
   }
 
+  /**
+   * Skills service for listing, showing, and running skills
+   */
+  get skills(): SkillsService {
+    if (!this._skills) {
+      this._skills = new SkillsService(this._transport.createClient());
+      if (this._sessionId) {
+        this._skills.setSessionId(this._sessionId);
+      }
+    }
+    return this._skills;
+  }
+
   // ============================================================================
   // Session routing
   // ============================================================================
@@ -327,6 +342,7 @@ export class CMDOPClient {
     await this.terminal.setMachine(hostname, partialMatch);
     await this.files.setMachine(hostname, partialMatch);
     await this.agent.setMachine(hostname, partialMatch);
+    await this.skills.setMachine(hostname, partialMatch);
   }
 
   /**
@@ -360,6 +376,7 @@ export class CMDOPClient {
     this._extract = null;
     this._browser = null;
     this._download = null;
+    this._skills = null;
   }
 
   // ============================================================================
@@ -395,6 +412,7 @@ export class CMDOPClient {
     this._extract = null;
     this._browser = null;
     this._download = null;
+    this._skills = null;
     await this._transport.close();
   }
 

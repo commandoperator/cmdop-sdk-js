@@ -9,3 +9,6 @@ export type { FilesHandlerConfig } from './files.js';
 
 export { HelpHandler } from './help.js';
 export type { HelpHandlerConfig } from './help.js';
+
+export { SkillsHandler } from './skills.js';
+export type { SkillsHandlerConfig } from './skills.js';

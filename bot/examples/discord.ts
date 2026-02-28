@@ -47,7 +47,7 @@ async function main() {
 
   await hub.start();
   console.log('✅ Discord bot running. Press Ctrl+C to stop.');
-  console.log('Slash commands: /exec  /agent  /files  /help\n');
+  console.log('Slash commands: /exec  /agent  /skills  /files  /help\n');
 
   async function shutdown(signal: string) {
     console.log(`\n${signal} received, shutting down...`);

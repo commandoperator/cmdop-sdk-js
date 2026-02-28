@@ -35,7 +35,7 @@ async function main() {
 
   await hub.start();
   console.log('✅ Telegram bot running. Press Ctrl+C to stop.');
-  console.log('Available commands: /exec  /agent  /files  /help\n');
+  console.log('Available commands: /exec  /agent  /skills  /files  /help\n');
 
   async function shutdown(signal: string) {
     console.log(`\n${signal} received, shutting down...`);

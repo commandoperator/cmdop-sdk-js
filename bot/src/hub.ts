@@ -6,6 +6,7 @@ import { TerminalHandler } from './handlers/terminal.js';
 import { AgentHandler } from './handlers/agent.js';
 import { FilesHandler } from './handlers/files.js';
 import { HelpHandler } from './handlers/help.js';
+import { SkillsHandler } from './handlers/skills.js';
 import type { ChannelProtocol, HandlerProtocol, LoggerProtocol, PermissionStoreProtocol } from './core/types.js';
 import type { BotSettings } from './config.js';
 import { loadSettings } from './config.js';
@@ -107,6 +108,7 @@ export class IntegrationHub {
     // Register default handlers
     hub.registerHandler(new TerminalHandler(client, logger, { maxOutputLength: settings.maxOutputLength }));
     hub.registerHandler(new AgentHandler(client, logger, { maxOutputLength: settings.maxOutputLength }));
+    hub.registerHandler(new SkillsHandler(client, logger, { maxOutputLength: settings.maxOutputLength }));
     hub.registerHandler(new FilesHandler(client, logger));
     hub.registerHandler(new HelpHandler(client, logger, {
       getCommands: () => dispatcher.getCommandList(),

@@ -8,3 +8,4 @@ export * from './files';
 export * from './agent';
 export * from './config';
 export * from './download';
+export * from './skills';

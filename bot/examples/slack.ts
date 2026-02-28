@@ -48,7 +48,7 @@ async function main() {
 
   await hub.start();
   console.log('✅ Slack bot running (Socket Mode). Press Ctrl+C to stop.');
-  console.log('Commands: /exec  /agent  /files  /help\n');
+  console.log('Commands: /exec  /agent  /skills  /files  /help\n');
 
   async function shutdown(signal: string) {
     console.log(`\n${signal} received, shutting down...`);

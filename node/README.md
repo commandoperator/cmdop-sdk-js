@@ -144,6 +144,44 @@ const data = await client.agent.extract<z.infer<typeof FileListSchema>>(
 console.log(data.files, data.total);
 ```
 
+### Skills
+
+```typescript
+// List all installed skills
+const skills = await client.skills.list();
+for (const skill of skills) {
+  console.log(`${skill.name} (${skill.origin}) — ${skill.description}`);
+}
+
+// Show skill details
+const detail = await client.skills.show('code-review');
+if (detail.found) {
+  console.log(detail.info?.name, detail.info?.version);
+  console.log(detail.content); // SKILL.md body
+  console.log(detail.source);  // file path on agent
+}
+
+// Run a skill
+const result = await client.skills.run('code-review', 'Review my PR changes');
+console.log(result.text);
+console.log(result.durationMs);
+
+// Structured output
+import { z, zodToJsonSchema } from '@cmdop/node';
+
+const ReviewSchema = z.object({
+  issues: z.array(z.object({ file: z.string(), line: z.number(), message: z.string() })),
+  summary: z.string(),
+});
+
+const review = await client.skills.extract<z.infer<typeof ReviewSchema>>(
+  'code-review',
+  'Review the changes',
+  zodToJsonSchema(ReviewSchema)
+);
+console.log(review.issues, review.summary);
+```
+
 ### Extract
 
 Dedicated structured data extraction RPC (more reliable than `agent.extract()`).
@@ -267,6 +305,7 @@ client.setSessionId(online[0].agentId);
 // Or route each service to a different machine
 await client.files.setMachine('storage-01');
 await client.agent.setMachine('gpu-box');
+await client.skills.setMachine('gpu-box');
 await client.terminal.setMachine('prod-01');
 ```
 

@@ -79,3 +79,11 @@ export type {
   DownloadFileOptions,
   DownloadUrlOptions,
 } from './download';
+
+export { SkillsService } from './skills';
+export type {
+  SkillInfo,
+  SkillDetail,
+  SkillRunOptions,
+  SkillRunResult,
+} from './skills';

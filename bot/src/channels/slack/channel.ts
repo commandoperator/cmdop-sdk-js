@@ -80,7 +80,7 @@ export class SlackChannel extends BaseChannel {
             { title: 'Get help', message: '/help' },
           ],
         });
-        await say('Hello! Use `/exec`, `/agent`, `/files`, or `/help`.');
+        await say('Hello! Use `/exec`, `/agent`, `/skills`, `/files`, or `/help`.');
       },
 
       threadContextChanged: async ({ saveThreadContext }) => {

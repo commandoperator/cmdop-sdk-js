@@ -118,6 +118,11 @@ export {
   // download
   DownloadMetricsSchema,
   DownloadResultSchema,
+  // skills
+  SkillInfoSchema,
+  SkillDetailSchema,
+  SkillRunOptionsSchema,
+  SkillRunResultSchema,
 } from './models';
 export type {
   SessionState,
@@ -170,7 +175,7 @@ export type {
 // Services
 // ============================================================================
 
-export { BaseService, TerminalService, FilesService, AgentService, ExtractService, BrowserService, BrowserSession, DownloadService } from './services';
+export { BaseService, TerminalService, FilesService, AgentService, ExtractService, BrowserService, BrowserSession, DownloadService, SkillsService } from './services';
 export type {
   CreateSessionOptions,
   ListSessionsOptions,
@@ -231,6 +236,11 @@ export type {
   DownloadMetrics,
   DownloadFileOptions,
   DownloadUrlOptions,
+  // Skills types
+  SkillInfo,
+  SkillDetail,
+  SkillRunOptions,
+  SkillRunResult,
 } from './services';
 
 // ============================================================================

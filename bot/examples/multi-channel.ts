@@ -85,7 +85,7 @@ async function main() {
   console.log(`✅ IntegrationHub started (${running.length}/${hub.channelCount} channels running)`);
   if (running.length > 0) console.log(`   Running: ${running.join(', ')}`);
   if (failed.length > 0) console.warn(`   ⚠️  Failed: ${failed.join(', ')}`);
-  console.log('Commands: /exec  /agent  /files  /help\n');
+  console.log('Commands: /exec  /agent  /skills  /files  /help\n');
 
   // ─── Graceful shutdown ────────────────────────────────────────────────────
   async function shutdown(signal: string) {

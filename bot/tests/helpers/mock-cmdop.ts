@@ -29,6 +29,12 @@ export function createMockClient(): CMDOPClient {
       stream: vi.fn().mockReturnValue({ on: vi.fn(), start: vi.fn().mockResolvedValue({ success: true, text: '', durationMs: 0 }) }),
       setMachine: vi.fn().mockResolvedValue(undefined),
     },
+    skills: {
+      list: vi.fn().mockResolvedValue([]),
+      show: vi.fn().mockResolvedValue({ found: false, content: '', source: '', error: 'Not found' }),
+      run: vi.fn().mockResolvedValue({ requestId: '', success: true, text: 'done', error: undefined, toolResults: [], durationMs: 100 }),
+      setMachine: vi.fn().mockResolvedValue(undefined),
+    },
     healthCheck: vi.fn().mockResolvedValue({ healthy: true, version: '0.1.0', activeSessions: 0 }),
     close: vi.fn().mockResolvedValue(undefined),
     setSessionId: vi.fn(),
