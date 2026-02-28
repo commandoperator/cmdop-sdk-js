@@ -75,10 +75,78 @@ export class TelegramFormatter implements FormatterProtocol {
     return `${icon} \`${this.escapeInline(name)}\`${sizeStr}`;
   }
 
+  // ─── HTML formatting (preferred — avoids MarkdownV2 escaping hell) ────────
+
+  /**
+   * Escape HTML special chars, then convert basic markdown to HTML tags.
+   * Handles: **bold**, `code`, ```code blocks```, _italic_
+   */
+  formatTextHtml(text: string): string {
+    let html = escapeHtml(text);
+
+    // Code blocks: ```lang\n...\n``` → <pre><code>...</code></pre>
+    html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_m, lang, code) => {
+      const cls = lang ? ` class="language-${lang}"` : '';
+      return `<pre><code${cls}>${code}</code></pre>`;
+    });
+
+    // Inline code: `...` → <code>...</code>
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Bold: **...** or __...__
+    html = html.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    html = html.replace(/__(.+?)__/g, '<b>$1</b>');
+
+    // Italic: *...* or _..._  (but not inside words with underscores)
+    html = html.replace(/(?<!\w)\*([^*]+?)\*(?!\w)/g, '<i>$1</i>');
+    html = html.replace(/(?<!\w)_([^_]+?)_(?!\w)/g, '<i>$1</i>');
+
+    return html;
+  }
+
+  /**
+   * Format code block as HTML <pre>.
+   */
+  formatCodeHtml(code: string, language?: string): string {
+    const escaped = escapeHtml(code);
+    const cls = language ? ` class="language-${language}"` : '';
+    const wrapped = `<pre><code${cls}>${escaped}</code></pre>`;
+
+    if (wrapped.length <= TELEGRAM_MAX_MESSAGE_LENGTH) return wrapped;
+
+    const overhead = 40 + (language?.length ?? 0);
+    const maxCode = TELEGRAM_MAX_MESSAGE_LENGTH - overhead;
+    return `<pre><code${cls}>${escaped.slice(0, maxCode)}\n…(truncated)</code></pre>`;
+  }
+
+  /**
+   * Format error message as HTML.
+   */
+  formatErrorHtml(message: string): string {
+    return `❌ <b>Error:</b> ${escapeHtml(message)}`;
+  }
+
+  /**
+   * Format file entry as HTML.
+   */
+  formatFileEntryHtml(name: string, isDir: boolean, size?: number): string {
+    const icon = isDir ? '📁' : '📄';
+    const sizeStr = size !== undefined && !isDir ? ` (${formatBytes(size)})` : '';
+    return `${icon} <code>${escapeHtml(name)}</code>${sizeStr}`;
+  }
+
   // Escape text that appears inside inline code (backtick context)
   private escapeInline(text: string): string {
     return text.replace(/`/g, "'");
   }
+}
+
+/** Escape HTML special characters */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 function formatBytes(bytes: number): string {

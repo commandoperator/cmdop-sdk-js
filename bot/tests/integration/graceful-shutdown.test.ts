@@ -90,7 +90,7 @@ describe('TokenBuffer drain on shutdown', () => {
 
 describe('IntegrationHub stop() resilience', () => {
   async function makeHub() {
-    vi.spyOn(CMDOPClient, 'local').mockResolvedValue({
+    vi.spyOn(CMDOPClient, 'local').mockReturnValue({
       close: vi.fn().mockResolvedValue(undefined),
       terminal: {}, agent: {}, files: {},
     } as unknown as CMDOPClient);

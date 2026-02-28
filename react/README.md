@@ -266,8 +266,8 @@ Manages WebSocket connection:
 
 ## Links
 
-- [Homepage](https://cmdop.com/sdk/react/)
-- [Documentation](https://cmdop.com/docs/sdk/react/)
+- [Homepage](https://cmdop.com/sdk/node/react)
+- [Documentation](https://cmdop.com/docs/sdk/node/react)
 - [npm](https://www.npmjs.com/package/@cmdop/react)
 - [GitHub](https://github.com/commandoperator/cmdop-sdk)
 

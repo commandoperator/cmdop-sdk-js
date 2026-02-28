@@ -46,8 +46,18 @@ export class TelegramChannel extends BaseChannel {
       const msg = this.normalizeContext(ctx);
       if (!msg) return;
 
-      for (const h of this.messageHandlers) await h(msg);
-      await this.processMessage(msg);
+      // Continuous typing indicator — resend every 4s until processing completes
+      const typingInterval = setInterval(() => {
+        ctx.api.sendChatAction(ctx.chat.id, 'typing').catch(() => {});
+      }, 4000);
+      await ctx.api.sendChatAction(ctx.chat.id, 'typing').catch(() => {});
+
+      try {
+        for (const h of this.messageHandlers) await h(msg);
+        await this.processMessage(msg);
+      } finally {
+        clearInterval(typingInterval);
+      }
     });
 
     // Callback query handler (inline keyboard buttons)
@@ -106,20 +116,18 @@ export class TelegramChannel extends BaseChannel {
     try {
       switch (message.type) {
         case 'text': {
-          const text = this.truncate(this.formatter.formatText(message.text));
-          await this.bot.api.sendMessage(chatId, text, { parse_mode: 'MarkdownV2' });
+          const text = this.truncate(this.formatter.formatTextHtml(message.text));
+          await this.bot.api.sendMessage(chatId, text, { parse_mode: 'HTML' });
           break;
         }
         case 'code': {
-          const code = this.formatter.formatCode(message.code, message.language);
-          await this.bot.api.sendMessage(chatId, code, { parse_mode: 'MarkdownV2' });
+          const code = this.formatter.formatCodeHtml(message.code, message.language);
+          await this.bot.api.sendMessage(chatId, code, { parse_mode: 'HTML' });
           break;
         }
         case 'error': {
-          const errText = this.formatter.formatError(
-            Object.assign(new Error(message.message), { code: 'BOT_ERROR', context: {}, toLog: () => ({}) }),
-          );
-          await this.bot.api.sendMessage(chatId, errText, { parse_mode: 'MarkdownV2' });
+          const errText = this.formatter.formatErrorHtml(message.message);
+          await this.bot.api.sendMessage(chatId, errText, { parse_mode: 'HTML' });
           break;
         }
       }
@@ -149,6 +157,6 @@ export class TelegramChannel extends BaseChannel {
 
   private truncate(text: string): string {
     if (text.length <= this.maxLength) return text;
-    return text.slice(0, this.maxLength - 20) + '\n\\.\\.\\. *\\(truncated\\)*';
+    return text.slice(0, this.maxLength - 20) + '\n... <i>(truncated)</i>';
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@cmdop/node",
-  "version": "2026.02.26",
+  "version": "2026.2.28",
   "description": "CMDOP SDK for Node.js - Server-side agent interaction via gRPC",
   "author": "CMDOP <dev@cmdop.com>",
   "homepage": "https://cmdop.com/sdk/node/",

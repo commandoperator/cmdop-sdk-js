@@ -3,7 +3,7 @@
  */
 
 import { createClient, type CallOptions } from 'nice-grpc';
-import { type ChannelCredentials } from '@grpc/grpc-js';
+import { ChannelCredentials } from '@grpc/grpc-js';
 import { Metadata } from 'nice-grpc-common';
 import { AuthenticationError } from '@cmdop/core';
 
@@ -48,8 +48,7 @@ export class RemoteTransport extends BaseTransport {
   }
 
   protected _getCredentials(): ChannelCredentials {
-    const { ChannelCredentials: GrpcCredentials } = require('@grpc/grpc-js') as typeof import('@grpc/grpc-js');
-    return GrpcCredentials.createSsl();
+    return ChannelCredentials.createSsl();
   }
 
   protected _getChannelOptions(): Record<string, unknown> {

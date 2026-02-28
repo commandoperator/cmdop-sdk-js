@@ -178,6 +178,7 @@ export interface ApiKeyResponse {
 export interface ApiKey {
   id: string;
   workspace: string;
+  workspace_name: string;
   /** Descriptive name for this API key */
   name: string;
   /** First 12 characters for display */

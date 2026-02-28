@@ -37,7 +37,7 @@ function makeChannel(id: string, opts: { failStart?: boolean; failStop?: boolean
 async function makeHub(options: Parameters<typeof IntegrationHub.create>[0] = {}) {
   // Patch CMDOPClient.local so it doesn't try to connect
   const { CMDOPClient } = await import('@cmdop/node');
-  const spy = vi.spyOn(CMDOPClient, 'local').mockResolvedValue({
+  const spy = vi.spyOn(CMDOPClient, 'local').mockReturnValue({
     close: vi.fn().mockResolvedValue(undefined),
     terminal: {},
     agent: {},

@@ -140,9 +140,13 @@ describe('DemoChannel integration', () => {
     expect(stack.outputs[0]?.type).toBe('error');
   });
 
-  it('non-command text is silently ignored', async () => {
+  it('non-command text is routed to agent handler', async () => {
+    vi.mocked(stack.client.agent.run).mockResolvedValue(
+      { success: true, text: 'Agent response', durationMs: 100, toolResults: [], usage: null } as never,
+    );
     await stack.channel.injectMessage({ userId: 'admin', text: 'just a chat message' });
-    expect(stack.outputs).toHaveLength(0);
+    expect(stack.outputs).toHaveLength(1);
+    expect(stack.outputs[0]?.type).toBe('text');
   });
 
   // ─── channel lifecycle ───────────────────────────────────────────────────────

@@ -22,19 +22,28 @@ export abstract class BaseChannel implements ChannelProtocol {
 
   /**
    * Process an incoming message: parse command → check permission → dispatch → send result.
+   * Plain text (non-command) is routed to the agent handler automatically.
    * Channels call this from their platform event handler.
    */
   protected async processMessage(msg: IncomingMessage): Promise<void> {
     const parsed = parseCommand(msg.text);
-    if (!parsed) return; // not a command
 
-    const ctx = {
-      userId: msg.userId,
-      command: parsed.name,
-      args: parsed.args,
-      channelId: msg.channelId,
-      message: msg,
-    } as const;
+    // Non-command text → route to agent as chat message
+    const ctx = parsed
+      ? {
+          userId: msg.userId,
+          command: parsed.name,
+          args: parsed.args,
+          channelId: msg.channelId,
+          message: msg,
+        } as const
+      : {
+          userId: msg.userId,
+          command: 'agent',
+          args: [msg.text],
+          channelId: msg.channelId,
+          message: msg,
+        } as const;
 
     let result: HandlerResult;
     try {

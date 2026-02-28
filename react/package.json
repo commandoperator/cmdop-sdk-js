@@ -1,10 +1,10 @@
 {
   "name": "@cmdop/react",
-  "version": "2026.02.26",
+  "version": "2026.2.28",
   "description": "CMDOP SDK for React - Hooks and components for browser-based agent interaction",
   "author": "CMDOP <dev@cmdop.com>",
-  "homepage": "https://cmdop.com/sdk/react/",
-  "documentation": "https://cmdop.com/docs/sdk/react/",
+  "homepage": "https://cmdop.com/sdk/node/react",
+  "documentation": "https://cmdop.com/docs/sdk/node/react",
   "repository": {
     "type": "git",
     "url": "https://github.com/commandoperator/cmdop-sdk-js.git",

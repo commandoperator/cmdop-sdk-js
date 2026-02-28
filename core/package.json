@@ -1,6 +1,6 @@
 {
   "name": "@cmdop/core",
-  "version": "2026.02.26",
+  "version": "2026.2.28",
   "description": "CMDOP SDK Core - Shared types, interfaces, and configuration",
   "author": "CMDOP <dev@cmdop.com>",
   "homepage": "https://cmdop.com",

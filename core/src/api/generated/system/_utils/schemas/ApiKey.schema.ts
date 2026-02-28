@@ -12,6 +12,7 @@ import { z } from 'zod'
 export const ApiKeySchema = z.object({
   id: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i),
   workspace: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i),
+  workspace_name: z.string(),
   name: z.string(),
   key_prefix: z.string(),
   last_used: z.string().datetime({ offset: true }).nullable(),

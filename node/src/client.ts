@@ -303,6 +303,33 @@ export class CMDOPClient {
   // ============================================================================
 
   /**
+   * Set target machine by hostname for all services at once.
+   * Resolves hostname → session on each service (terminal, files, agent, etc).
+   *
+   * This is the recommended way to initialize machine routing — equivalent to
+   * calling setMachine() on each service individually.
+   *
+   * @param hostname Machine hostname (exact or partial match)
+   * @param partialMatch Use ICONTAINS match (default: true)
+   *
+   * @example
+   * ```typescript
+   * const client = CMDOPClient.remote('cmdop_live_xxx');
+   * await client.setMachine('my-server');
+   *
+   * // All services now route to that machine
+   * const files = await client.files.list('/tmp');
+   * const result = await client.agent.run('Hello');
+   * ```
+   */
+  async setMachine(hostname: string, partialMatch?: boolean): Promise<void> {
+    // Set on all services (each caches its own sessionId)
+    await this.terminal.setMachine(hostname, partialMatch);
+    await this.files.setMachine(hostname, partialMatch);
+    await this.agent.setMachine(hostname, partialMatch);
+  }
+
+  /**
    * Set session ID for all services.
    * Required for remote connections, optional for local IPC.
    *

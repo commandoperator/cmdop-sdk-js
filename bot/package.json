@@ -1,9 +1,10 @@
 {
   "name": "@cmdop/bot",
-  "version": "2026.02.26",
+  "version": "2026.2.28",
   "description": "CMDOP multi-channel bot integrations — Telegram, Discord, Slack, Teams, and more",
   "author": "CMDOP <dev@cmdop.com>",
-  "homepage": "https://cmdop.com/sdk/bot/",
+  "homepage": "https://cmdop.com/sdk/python/bot",
+  "documentation": "https://cmdop.com/docs/sdk/node/bot",
   "repository": {
     "type": "git",
     "url": "https://github.com/commandoperator/cmdop-sdk-js.git",
@@ -45,6 +46,7 @@
   },
   "dependencies": {
     "@cmdop/node": "workspace:*",
+    "consola": "^3.4.2",
     "zod": "^4"
   },
   "peerDependencies": {

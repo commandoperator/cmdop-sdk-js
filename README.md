@@ -10,6 +10,7 @@
 |---------|---------|-------------|
 | [`@cmdop/core`](./core) | [![npm](https://img.shields.io/npm/v/@cmdop/core)](https://www.npmjs.com/package/@cmdop/core) | Shared types, interfaces, and configuration |
 | [`@cmdop/node`](./node) | [![npm](https://img.shields.io/npm/v/@cmdop/node)](https://www.npmjs.com/package/@cmdop/node) | Node.js SDK — server-side agent interaction via gRPC |
+| [`@cmdop/bot`](./bot) | [![npm](https://img.shields.io/npm/v/@cmdop/bot)](https://www.npmjs.com/package/@cmdop/bot) | Multi-channel bot framework — Telegram, Discord, Slack |
 | [`@cmdop/react`](./react) | [![npm](https://img.shields.io/npm/v/@cmdop/react)](https://www.npmjs.com/package/@cmdop/react) | React hooks and components for browser-based interaction |
 
 ## Install
@@ -18,46 +19,18 @@
 # Node.js
 npm install @cmdop/node
 
+# Bot
+npm install @cmdop/bot
+
 # React
 npm install @cmdop/react
-```
-
-## Quick Start
-
-### Node.js
-
-```typescript
-import { CMDOPClient } from '@cmdop/node';
-
-const client = await CMDOPClient.remote('cmdop_xxx');
-
-const session = await client.terminal.create({ cols: 120, rows: 40 });
-await client.terminal.sendInput(session.sessionId, 'uname -a\n');
-
-await client.close();
-```
-
-### React
-
-```tsx
-import { CMDOPProvider, WebSocketProvider, useTerminal } from '@cmdop/react';
-
-function App() {
-  return (
-    <CMDOPProvider token="your-jwt-token">
-      <WebSocketProvider url="wss://ws.cmdop.com/connection/websocket" getToken={() => Promise.resolve('your-jwt-token')}>
-        <Terminal sessionId="session-123" />
-      </WebSocketProvider>
-    </CMDOPProvider>
-  );
-}
-```
 
 ## Links
 
 - [Homepage](https://cmdop.com)
-- [Node.js SDK docs](https://cmdop.com/docs/sdk/node/)
-- [React SDK docs](https://cmdop.com/docs/sdk/react/)
+- [Node.js SDK docs](https://cmdop.com/docs/sdk/node)
+- [Bot SDK docs](https://cmdop.com/docs/sdk/node/bot)
+- [React SDK docs](https://cmdop.com/docs/sdk/node/react)
 - [Python SDK](https://github.com/commandoperator/cmdop-sdk)
 
 ## License

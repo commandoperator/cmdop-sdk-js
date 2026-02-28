@@ -279,6 +279,12 @@ All errors extend `BotError` and expose a `code` string:
 - `@cmdop/node` (peer dependency, installed automatically)
 - Platform libraries are **optional peer dependencies** — install only what you use
 
+## Links
+
+- [Homepage](https://cmdop.com/sdk/python/bot)
+- [Documentation](https://cmdop.com/docs/sdk/node/bot)
+- [npm](https://www.npmjs.com/package/@cmdop/bot)
+
 ## License
 
 MIT

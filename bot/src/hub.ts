@@ -20,6 +20,9 @@ type DiscordOptions = import('./channels/discord/channel.js').DiscordChannelOpti
 type SlackChannelCtor = typeof import('./channels/slack/channel.js').SlackChannel;
 type SlackOptions = import('./channels/slack/channel.js').SlackChannelOptions;
 
+import { DemoChannel } from './channels/demo/channel.js';
+import type { DemoChannelOptions as DemoOptions } from './channels/demo/channel.js';
+
 export interface HubOptions {
   /** CMDOP cloud API key. If omitted, uses local IPC connection. */
   apiKey?: string;
@@ -31,6 +34,12 @@ export interface HubOptions {
   permissionStore?: PermissionStoreProtocol;
   /** Admin user IDs (always have ADMIN permission). */
   adminUsers?: string[];
+  /**
+   * Default permission level for new/unknown users.
+   * Set to 'EXECUTE' to allow all users to run commands without explicit grants.
+   * Default: 'NONE'
+   */
+  defaultPermission?: import('./models/user.js').PermissionLevel;
   /** Logger instance. Default: stderr JSON logger at info level. */
   logger?: LoggerProtocol;
   /** Bot settings. Default: loaded from environment variables. */
@@ -79,13 +88,14 @@ export class IntegrationHub {
     const logger = options.logger ?? createLogger(settings.logLevel);
 
     const client = options.apiKey
-      ? await CMDOPClient.remote(options.apiKey)
-      : await CMDOPClient.local();
+      ? CMDOPClient.remote(options.apiKey)
+      : CMDOPClient.local();
 
     const store = options.permissionStore ?? new InMemoryPermissionStore();
     const identityMap = new IdentityMap();
     const permissions = new PermissionManager(store, {
       adminUsers: [...(options.adminUsers ?? []), ...settings.allowedUsers],
+      defaultLevel: options.defaultPermission,
       identityMap,
     });
 
@@ -143,6 +153,16 @@ export class IntegrationHub {
     return this.registerChannel(channel);
   }
 
+  /**
+   * Create and register a DemoChannel for CLI testing.
+   * No external dependencies — messages are injected via the returned channel's `injectMessage()`.
+   */
+  addDemo(options?: DemoOptions): DemoChannel {
+    const channel = new DemoChannel(this._permissions, this._dispatcher, this._logger, options);
+    this.registerChannel(channel);
+    return channel;
+  }
+
   registerHandler(handler: HandlerProtocol): this {
     this._dispatcher.register(handler);
     return this;
@@ -153,6 +173,19 @@ export class IntegrationHub {
   async start(): Promise<void> {
     if (this.started) return;
     this.started = true;
+
+    // Initialize machine routing on all CMDOP services
+    if (this._settings.defaultMachine) {
+      try {
+        await this._client.setMachine(this._settings.defaultMachine);
+        this._logger.info('Machine routing initialized', { machine: this._settings.defaultMachine });
+      } catch (err) {
+        this._logger.error('Failed to initialize machine routing', {
+          machine: this._settings.defaultMachine,
+          err: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }
 
     if (this.channelStartMode === 'strict') {
       // All channels must start — any failure is fatal

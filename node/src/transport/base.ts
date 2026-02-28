@@ -10,7 +10,24 @@ import {
   type TerminalStreamingServiceClient,
 } from '../proto/generated/service';
 import type { Transport } from './types';
-import { getSettings } from '../config';
+import { getSettings, type SDKSettings } from '../config';
+
+/** gRPC channel options derived from SDK settings */
+interface ChannelOptions {
+  'grpc.keepalive_time_ms': number;
+  'grpc.keepalive_timeout_ms': number;
+  'grpc.keepalive_permit_without_calls': number;
+  'grpc.http2.min_time_between_pings_ms': number;
+}
+
+function buildChannelOptions(s: SDKSettings): ChannelOptions {
+  return {
+    'grpc.keepalive_time_ms': s.keepaliveIntervalMs,
+    'grpc.keepalive_timeout_ms': 5_000,
+    'grpc.keepalive_permit_without_calls': 1,
+    'grpc.http2.min_time_between_pings_ms': s.keepaliveIntervalMs,
+  };
+}
 
 export abstract class BaseTransport implements Transport {
   protected _channel: Channel | null = null;
@@ -36,22 +53,19 @@ export abstract class BaseTransport implements Transport {
     return this._address;
   }
 
-  async connect(): Promise<void> {
-    if (this._channel) {
-      return;
-    }
-    const s = getSettings();
-    const baseOptions = {
-      'grpc.keepalive_time_ms': s.keepaliveIntervalMs,
-      'grpc.keepalive_timeout_ms': 5_000,
-      'grpc.keepalive_permit_without_calls': 1,
-      'grpc.http2.min_time_between_pings_ms': s.keepaliveIntervalMs,
-    };
+  /** Ensure the gRPC channel is created. Idempotent. */
+  private _ensureChannel(): void {
+    if (this._channel) return;
+    const opts = buildChannelOptions(getSettings());
     this._channel = createChannel(
       this._address,
       this._getCredentials(),
-      { ...baseOptions, ...this._getChannelOptions() }
+      { ...opts, ...this._getChannelOptions() },
     );
+  }
+
+  async connect(): Promise<void> {
+    this._ensureChannel();
   }
 
   async close(): Promise<void> {
@@ -64,6 +78,7 @@ export abstract class BaseTransport implements Transport {
 
   createClient(): TerminalStreamingServiceClient {
     if (!this._client) {
+      this._ensureChannel();
       this._client = this._buildClient();
     }
     return this._client;
