@@ -283,7 +283,7 @@ All errors extend `BotError` and expose a `code` string:
 ## Links
 
 - [Homepage](https://cmdop.com/sdk/python/bot)
-- [Documentation](https://cmdop.com/docs/sdk/node/bot)
+- [Documentation](https://cmdop.com/docs/sdk/node-bot)
 - [npm](https://www.npmjs.com/package/@cmdop/bot)
 
 ## License
