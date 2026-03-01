@@ -38,7 +38,7 @@ export class RemoteTransport extends BaseTransport {
 
   /**
    * Set agent ID for routing requests to a specific machine.
-   * Invalidates the cached client so next call picks up new x-agent-id header.
+   * Invalidates the cached client so next call picks up new x-cmdop-agent-id header.
    */
   setAgentId(agentId: string): void {
     if (this._agentId !== agentId) {
@@ -82,7 +82,8 @@ export class RemoteTransport extends BaseTransport {
           metadata = metadata.set('authorization', `Bearer ${self._apiKey}`);
 
           if (self._agentId) {
-            metadata = metadata.set('x-agent-id', self._agentId);
+            // Must match Python SDK header name — server routes by this header
+            metadata = metadata.set('x-cmdop-agent-id', self._agentId);
           }
 
           const enhancedOptions: CallOptions = {

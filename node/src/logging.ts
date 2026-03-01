@@ -1,9 +1,32 @@
 /**
- * Structured logging for the SDK
+ * SDK logging utilities
  *
- * Respects CMDOP_LOG_LEVEL and CMDOP_LOG_JSON env vars.
- * Logging is off by default (level: 'silent') to avoid polluting application output.
+ * Two loggers for different purposes:
+ *
+ *   logger  — SDK-internal structured logger (silent by default).
+ *             Controlled via CMDOP_LOG_LEVEL / CMDOP_LOG_JSON env vars.
+ *             Use for gRPC debug, transport internals, etc.
+ *
+ *   consola — User-facing pretty console output (always visible).
+ *             Provides start/success/error/box/info for CLI/TUI scripts.
+ *             Use for ssh.ts, examples, and any user-visible messages.
  */
+
+import { createConsola } from 'consola';
+
+// ============================================================================
+// User-facing console (consola)
+// ============================================================================
+
+/**
+ * Pretty console logger for user-facing CLI/TUI output.
+ * Provides: start(), success(), error(), box(), info(), warn(), etc.
+ */
+export const consola = createConsola({ fancy: true } as any);
+
+// ============================================================================
+// SDK-internal structured logger
+// ============================================================================
 
 export type SdkLogLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent';
 
@@ -21,10 +44,6 @@ export interface Logger {
   warn(message: string, context?: Record<string, unknown>): void;
   error(message: string, context?: Record<string, unknown>): void;
 }
-
-// ============================================================================
-// Internal SDK logger
-// ============================================================================
 
 function getLogLevel(): SdkLogLevel {
   const env = (process.env['CMDOP_LOG_LEVEL'] ?? 'silent').toLowerCase();

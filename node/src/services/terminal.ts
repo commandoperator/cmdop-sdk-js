@@ -8,6 +8,8 @@ import { sessionStatusToJSON } from '../proto/generated/common_types';
 import { BaseService } from './base';
 import { TerminalStream } from '../streaming/terminal';
 import type { TerminalStreamOptions } from '../streaming/terminal';
+import { AttachStream } from '../streaming/attach';
+import type { AttachStreamOptions } from '../streaming/attach';
 import type {
   CreateSessionOptions,
   ListSessionsOptions,
@@ -208,6 +210,24 @@ export class TerminalService extends BaseService {
    */
   stream(sessionId: string, options?: TerminalStreamOptions): TerminalStream {
     return new TerminalStream(this.client, sessionId, options);
+  }
+
+  /**
+   * Create an AttachStream for bidirectional terminal attach (SSH-like).
+   *
+   * Uses the connectTerminal gRPC bidirectional stream to attach to an
+   * existing session with full stdin/stdout/resize support.
+   *
+   * @example
+   * const stream = terminal.attach(sessionId);
+   * stream.on((event) => {
+   *   if (event.type === 'sessionReady') console.log('Connected!');
+   *   if (event.type === 'output') process.stdout.write(event.data);
+   * });
+   * await stream.connect();
+   */
+  attach(sessionId: string, options?: AttachStreamOptions): AttachStream {
+    return new AttachStream(this.client, sessionId, options);
   }
 
   /**

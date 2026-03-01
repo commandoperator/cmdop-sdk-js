@@ -1,6 +1,6 @@
 {
   "name": "@cmdop/node",
-  "version": "2026.3.101",
+  "version": "2026.3.103",
   "description": "CMDOP SDK for Node.js - Server-side agent interaction via gRPC",
   "author": "CMDOP <dev@cmdop.com>",
   "homepage": "https://cmdop.com/sdk/node/",
@@ -50,6 +50,7 @@
     "@bufbuild/protobuf": "^2.10.2",
     "@cmdop/core": "workspace:*",
     "@grpc/grpc-js": "^1.12.0",
+    "consola": "^3.4.2",
     "long": "^5.2.0",
     "nice-grpc": "^2.1.0",
     "nice-grpc-common": "^2.0.2",

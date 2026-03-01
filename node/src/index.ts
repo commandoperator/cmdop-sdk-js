@@ -7,7 +7,7 @@
 // Logging
 // ============================================================================
 
-export { logger } from './logging';
+export { logger, consola } from './logging';
 export type { Logger, SdkLogLevel } from './logging';
 
 // ============================================================================
@@ -138,7 +138,7 @@ export type {
 // Streaming
 // ============================================================================
 
-export { StreamState, AgentStream, TerminalStream } from './streaming';
+export { StreamState, AgentStream, TerminalStream, AttachStream } from './streaming';
 export type {
   AgentStreamEvent,
   AgentTokenEvent,
@@ -156,8 +156,22 @@ export type {
   TerminalErrorEvent,
   TerminalStreamCallback,
   TerminalStreamOptions,
+  AttachStreamEvent,
+  AttachSessionReadyEvent,
+  AttachOutputEvent,
+  AttachClosedEvent,
+  AttachErrorEvent,
+  AttachStreamCallback,
+  AttachStreamOptions,
   StreamMetrics,
 } from './streaming';
+
+// ============================================================================
+// SSH Connect (high-level interactive terminal)
+// ============================================================================
+
+export { sshConnect } from './ssh';
+export type { SSHConnectOptions } from './ssh';
 
 // ============================================================================
 // Transport layer

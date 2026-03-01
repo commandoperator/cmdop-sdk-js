@@ -1,6 +1,6 @@
 {
   "name": "@cmdop/bot",
-  "version": "2026.3.101",
+  "version": "2026.3.103",
   "description": "CMDOP multi-channel bot integrations — Telegram, Discord, Slack, Teams, and more",
   "author": "CMDOP <dev@cmdop.com>",
   "homepage": "https://cmdop.com/sdk/python/bot",

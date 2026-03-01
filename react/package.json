@@ -1,6 +1,6 @@
 {
   "name": "@cmdop/react",
-  "version": "2026.3.101",
+  "version": "2026.3.103",
   "description": "CMDOP SDK for React - Hooks and components for browser-based agent interaction",
   "author": "CMDOP <dev@cmdop.com>",
   "homepage": "https://cmdop.com/sdk/node/react",

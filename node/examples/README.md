@@ -20,7 +20,7 @@ npm install @cmdop/node
 
 | Example | Description |
 |---------|-------------|
-| [terminal_ssh.ts](terminal_ssh.ts) | SSH-like terminal connection and command execution |
+| [terminal_ssh.ts](terminal_ssh.ts) | Interactive SSH session or single command execution |
 | [file_operations.ts](file_operations.ts) | Read, write, and list files on remote machines |
 | [fleet_status.ts](fleet_status.ts) | Check status of all connected machines |
 | [agent_structured.ts](agent_structured.ts) | AI agent with Zod structured output |
@@ -40,7 +40,10 @@ export CMDOP_MACHINE="my-server"       # Default target machine
 
 ```bash
 # From SDK root:
-pnpm tsx examples/terminal_ssh.ts
+pnpm tsx examples/terminal_ssh.ts                          # interactive SSH
+pnpm tsx examples/terminal_ssh.ts my-server                # SSH to specific host
+pnpm tsx examples/terminal_ssh.ts --exec "ls -la"          # single command
+DEBUG=1 pnpm tsx examples/terminal_ssh.ts                  # SSH with gRPC debug logs
 pnpm tsx examples/fleet_status.ts
 pnpm tsx examples/file_operations.ts list /tmp
 pnpm tsx examples/agent_structured.ts

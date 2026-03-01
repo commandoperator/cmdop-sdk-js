@@ -1,37 +1,42 @@
 #!/usr/bin/env npx tsx
 /**
- * SSH-like terminal connection.
+ * SSH-like interactive terminal connection.
+ *
+ * Opens a full bidirectional terminal session to a remote machine —
+ * stdin, stdout, resize, Ctrl+D to disconnect. Like `ssh`, but over
+ * CMDOP's gRPC relay.
  *
  * Prerequisites:
  *   1. CMDOP agent running on target machine
  *   2. pnpm add @cmdop/node
  *
  * Usage:
- *   # Connect to default machine (CMDOP_MACHINE env)
+ *   # Interactive SSH (default machine from CMDOP_MACHINE)
  *   pnpm tsx examples/terminal_ssh.ts
  *
- *   # Connect to specific hostname
+ *   # Interactive SSH to specific hostname
  *   pnpm tsx examples/terminal_ssh.ts my-server
  *
- *   # Execute single command
+ *   # Execute single command (non-interactive)
  *   pnpm tsx examples/terminal_ssh.ts --exec "ls -la"
  *   pnpm tsx examples/terminal_ssh.ts my-server --exec "uname -a"
  *
- *   # With custom timeout
- *   pnpm tsx examples/terminal_ssh.ts --exec "apt update" --timeout 120
+ *   # Debug mode (log gRPC messages to stderr)
+ *   DEBUG=1 pnpm tsx examples/terminal_ssh.ts
  *
  * Environment:
  *   CMDOP_API_KEY: Your CMDOP API key
  *   CMDOP_MACHINE: Default target hostname
  */
 
-import { CMDOPClient, AgentOfflineError } from '@cmdop/node';
+import { CMDOPClient, sshConnect, AgentOfflineError } from '@cmdop/node';
 
 async function main(): Promise<number> {
   const args = process.argv.slice(2);
 
   const apiKey = process.env.CMDOP_API_KEY ?? '';
   const defaultMachine = process.env.CMDOP_MACHINE ?? '';
+  const debug = process.env.DEBUG === '1';
 
   // Parse args
   let hostname = defaultMachine;
@@ -49,7 +54,7 @@ async function main(): Promise<number> {
   }
 
   if (!apiKey) {
-    console.error('Error: No API key. Set CMDOP_API_KEY env or use --api-key');
+    console.error('Error: No API key. Set CMDOP_API_KEY environment variable');
     return 1;
   }
 
@@ -58,48 +63,24 @@ async function main(): Promise<number> {
     return 1;
   }
 
-  await using client = CMDOPClient.remote(apiKey);
+  const client = CMDOPClient.remote(apiKey);
 
   try {
-    // Find active session for this machine
-    const active = await client.terminal.getActiveSession(hostname);
-
-    if (!active) {
-      console.error(`No active session found for '${hostname}'`);
-
-      const { sessions } = await client.terminal.list();
-      if (sessions.length > 0) {
-        console.error('\nAvailable machines:');
-        for (const s of sessions) {
-          const age = s.heartbeatAgeSeconds ? ` (${s.heartbeatAgeSeconds}s ago)` : '';
-          console.error(`  - ${s.hostname ?? s.sessionId}${age}`);
-        }
-      }
-      return 1;
-    }
-
-    console.log(`Connected to: ${active.hostname ?? active.sessionId}`);
-    client.setSessionId(active.sessionId);
-
     if (command) {
+      // Non-interactive: execute single command
+      await client.terminal.setMachine(hostname);
+
       console.log(`$ ${command}\n`);
-      const output = await client.terminal.execute(active.sessionId, command, {
-        timeoutSeconds,
+      const { output, exitCode } = await client.terminal.execute(command, {
+        timeoutMs: timeoutSeconds * 1000,
       });
-      process.stdout.write(output.stdout ?? '');
-      if (output.exitCode !== 0) {
-        console.log(`\nExit code: ${output.exitCode}`);
-      }
-      return output.exitCode ?? 0;
+      if (output) process.stdout.write(output + '\n');
+      if (exitCode !== 0) console.error(`\nExit code: ${exitCode}`);
+      return exitCode;
     }
 
-    // Interactive — list recent history as a simple fallback
-    const history = await client.terminal.getHistory(active.sessionId, { limit: 20 });
-    console.log(`\nRecent history (${history.total} commands):`);
-    for (const cmd of history.commands.slice(-10)) {
-      console.log(`  $ ${cmd}`);
-    }
-    return 0;
+    // Interactive: full SSH-like session
+    return await sshConnect({ client, hostname, debug });
 
   } catch (error) {
     if (error instanceof AgentOfflineError) {
@@ -110,6 +91,8 @@ async function main(): Promise<number> {
       console.error(`Error: ${error.message}`);
     }
     return 1;
+  } finally {
+    await client.close();
   }
 }
 

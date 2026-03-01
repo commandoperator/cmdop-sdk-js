@@ -124,6 +124,37 @@ export type TerminalStreamEvent =
 export type TerminalStreamCallback = (event: TerminalStreamEvent) => void;
 
 // ============================================================================
+// Attach stream events (bidirectional gRPC via connectTerminal)
+// ============================================================================
+
+export interface AttachSessionReadyEvent {
+  type: 'sessionReady';
+}
+
+export interface AttachOutputEvent {
+  type: 'output';
+  data: Buffer;
+}
+
+export interface AttachClosedEvent {
+  type: 'closed';
+  reason: string;
+}
+
+export interface AttachErrorEvent {
+  type: 'error';
+  error: Error;
+}
+
+export type AttachStreamEvent =
+  | AttachSessionReadyEvent
+  | AttachOutputEvent
+  | AttachClosedEvent
+  | AttachErrorEvent;
+
+export type AttachStreamCallback = (event: AttachStreamEvent) => void;
+
+// ============================================================================
 // Stream metrics
 // ============================================================================
 

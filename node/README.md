@@ -44,22 +44,52 @@ await client.terminal.resize(session.sessionId, 200, 50);
 await client.terminal.signal(session.sessionId, 'SIGINT');
 
 // Run command and wait for output
-const output = await client.terminal.execute(session.sessionId, 'echo hello');
-console.log(output.stdout, output.exitCode);
+await client.terminal.setMachine('my-server');
+const { output, exitCode } = await client.terminal.execute('echo hello');
+console.log(output, exitCode);
 
 // Get the currently active session
-const active = await client.terminal.getActiveSession();
+const active = await client.terminal.getActiveSession({ hostname: 'my-server' });
 
-// Stream output in real-time
+// Stream output in real-time (polling-based)
 const stream = client.terminal.stream(session.sessionId);
 stream.on((event) => {
   if (event.type === 'output') process.stdout.write(event.data.toString());
 });
-await stream.start();
+await stream.connect();
+
+// Attach to session (bidirectional gRPC stream, SSH-like)
+const attach = client.terminal.attach(session.sessionId, { cols: 120, rows: 40 });
+attach.on((event) => {
+  if (event.type === 'sessionReady') console.log('Connected!');
+  if (event.type === 'output') process.stdout.write(event.data);
+  if (event.type === 'closed') console.log('Disconnected:', event.reason);
+});
+await attach.connect();
+attach.sendInput('ls -la\n');
+attach.sendResize(200, 50);
+attach.close();
 
 // List / close
 const { sessions } = await client.terminal.list();
 await client.terminal.close(session.sessionId);
+```
+
+### SSH Connect
+
+High-level interactive terminal (like `ssh`). Handles raw mode, stdin/stdout piping, resize, and Ctrl+D to disconnect.
+
+```typescript
+import { CMDOPClient, sshConnect } from '@cmdop/node';
+
+const client = CMDOPClient.remote('cmdop_live_xxx');
+const exitCode = await sshConnect({
+  client,
+  hostname: 'my-server',
+  debug: false,       // optional: log gRPC messages to stderr
+  sessionId: '...',   // optional: skip session discovery
+});
+process.exit(exitCode);
 ```
 
 ### Files
