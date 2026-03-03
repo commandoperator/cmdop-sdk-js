@@ -441,6 +441,16 @@ try {
 
 - [@cmdop/core](https://www.npmjs.com/package/@cmdop/core) — Shared types and errors
 - [@cmdop/react](https://www.npmjs.com/package/@cmdop/react) — React hooks
+## cmdok CLI
+
+No code needed? Use the standalone binary:
+
+```bash
+curl -fsSL cmdop.com/install-cli.sh | bash
+cmdok ssh
+```
+
+![cmdok ssh](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/assets/cmdok-ssh.gif)
 
 ## Links
 

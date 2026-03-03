@@ -26,6 +26,8 @@ curl -fsSL cmdop.com/install-cli.sh | bash
 cmdok ssh
 ```
 
+![cmdok ssh](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/assets/cmdok-ssh.gif)
+
 The CLI will prompt for your API key on first run, then show available machines. See [cli/README.md](./cli) for all commands.
 
 ## Install SDK

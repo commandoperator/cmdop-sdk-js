@@ -2,6 +2,8 @@
 
 Standalone cross-platform binary for remote agent interaction. No Node.js or npm required — download and run.
 
+![cmdok ssh](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/assets/cmdok-ssh.gif)
+
 ## Install
 
 **macOS / Linux:**
