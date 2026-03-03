@@ -1,0 +1,12 @@
+# Build output
+dist/
+
+# Signing secrets (track .env.example, ignore actual .env)
+@release/secrets/macos/.env
+!@release/secrets/macos/.env.example
+
+# Node
+node_modules/
+
+# OS
+.DS_Store

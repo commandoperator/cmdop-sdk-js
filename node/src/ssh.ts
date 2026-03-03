@@ -16,6 +16,7 @@ export interface SSHConnectOptions {
   hostname: string;
   sessionId?: string;
   debug?: boolean;
+  onShareRequest?: () => Promise<void>;
 }
 
 /**
@@ -37,7 +38,7 @@ export interface SSHConnectOptions {
  * ```
  */
 export async function sshConnect(options: SSHConnectOptions): Promise<number> {
-  const { client, hostname, debug = false } = options;
+  const { client, hostname, debug = false, onShareRequest } = options;
 
   // 1. Find active session and set machine (sets x-agent-id on transport)
   logger.start(`Finding session for \`${hostname}\`...`);
@@ -86,6 +87,14 @@ export async function sshConnect(options: SSHConnectOptions): Promise<number> {
       cleanup();
       return;
     }
+    if (data.length === 1 && data[0] === 0x13 && onShareRequest) {
+      // Ctrl+S → create share link
+      if (process.stdin.isTTY) process.stdin.setRawMode(false);
+      onShareRequest().finally(() => {
+        if (!cleanedUp && process.stdin.isTTY) process.stdin.setRawMode(true);
+      });
+      return;
+    }
     stream.sendInput(data);
   };
 
@@ -109,8 +118,10 @@ export async function sshConnect(options: SSHConnectOptions): Promise<number> {
     switch (event.type) {
       case 'sessionReady':
         sessionReady = true;
+        const tips = [`Use \`ccat\` for syntax-highlighted file viewing`];
+        if (onShareRequest) tips.push('Press \x1b[1mCtrl+S\x1b[0m to share this session');
         logger.box(
-          `Connected! Press **Ctrl+D** to disconnect.\n\nTip: Use \`ccat\` for syntax-highlighted file viewing`,
+          `Connected! Press \x1b[1mCtrl+D\x1b[0m to disconnect.\n\n${tips.map((t) => `Tip: ${t}`).join('\n')}`,
         );
         console.log('');
 
@@ -120,8 +131,9 @@ export async function sshConnect(options: SSHConnectOptions): Promise<number> {
         process.stdin.on('data', stdinHandler);
         process.stdout.on('resize', resizeHandler);
 
-        // Send initial resize
+        // Send initial resize, then Ctrl+L to redraw shell prompt without extra blank line
         stream.sendResize(process.stdout.columns || 80, process.stdout.rows || 24);
+        setTimeout(() => stream.sendInput(Buffer.from('\x0c')), 200);
         break;
 
       case 'output':

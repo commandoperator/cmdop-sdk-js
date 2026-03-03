@@ -1,0 +1,9 @@
+{
+  "extends": "@cmdop/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src"],
+  "exclude": ["src/__tests__"]
+}

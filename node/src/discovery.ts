@@ -1,13 +1,19 @@
 /**
  * Remote agent discovery via REST API.
  *
- * Lists agents available for an API key from the cloud management API.
+ * Uses the generated machines API client from @cmdop/core.
  * For local agent discovery (auto-connecting to a running agent), see
  * transport/local.ts (LocalTransport.discover()).
  */
 
 import { getSettings } from './config';
-import { AuthenticationError, PermissionError } from '@cmdop/core';
+import {
+  MachinesModule,
+  AuthenticationError,
+  PermissionError,
+} from '@cmdop/core';
+
+type Machine = MachinesModule.MachinesMachinesTypes.Machine;
 
 // ============================================================================
 // Types
@@ -42,30 +48,39 @@ export interface RemoteAgentInfo {
 // Internal helpers
 // ============================================================================
 
-function parseRemoteAgentInfo(data: Record<string, unknown>): RemoteAgentInfo {
+function machineToAgentInfo(m: Machine): RemoteAgentInfo {
   let lastSeen: Date | null = null;
-  if (data['last_seen']) {
+  if (m.last_seen) {
     try {
-      lastSeen = new Date(String(data['last_seen']));
+      lastSeen = new Date(m.last_seen);
     } catch {
       // ignore
     }
   }
 
-  const status = (data['status'] as AgentStatus | undefined) ?? 'offline';
+  const status: AgentStatus = m.is_online ? 'online' : 'offline';
 
   return {
-    agentId: String(data['agent_id'] ?? ''),
-    name: String(data['name'] ?? data['hostname'] ?? 'Unknown'),
-    hostname: String(data['hostname'] ?? ''),
-    platform: String(data['platform'] ?? ''),
-    version: String(data['version'] ?? ''),
+    agentId: m.id,
+    name: m.name || m.hostname || 'Unknown',
+    hostname: m.hostname,
+    platform: m.os || '',
+    version: m.agent_version || '',
     status,
     lastSeen,
-    workspaceId: data['workspace_id'] != null ? String(data['workspace_id']) : null,
-    labels: (data['labels'] as Record<string, string> | null) ?? null,
-    isOnline: status === 'online',
+    workspaceId: m.workspace || null,
+    labels: null,
+    isOnline: m.is_online,
   };
+}
+
+function createAPI(apiKey: string): MachinesModule.API {
+  const baseUrl = getSettings().apiBaseUrl;
+  const api = new MachinesModule.API(baseUrl, {
+    storage: new MachinesModule.MemoryStorageAdapter(),
+  });
+  api.setToken(apiKey);
+  return api;
 }
 
 // ============================================================================
@@ -75,8 +90,7 @@ function parseRemoteAgentInfo(data: Record<string, unknown>): RemoteAgentInfo {
 /**
  * Remote agent discovery client.
  *
- * Lists agents available for an API key via REST API.
- * Use `AgentDiscovery.listAgents(apiKey)` or `CMDOPClient.listAgents(apiKey)`.
+ * Lists agents available for an API key via the machines REST API.
  *
  * @example
  * ```typescript
@@ -88,47 +102,47 @@ function parseRemoteAgentInfo(data: Record<string, unknown>): RemoteAgentInfo {
  */
 export class AgentDiscovery {
   private readonly _apiKey: string;
+  private _api: MachinesModule.API;
 
   constructor(apiKey: string) {
     this._apiKey = apiKey;
-  }
-
-  private get _baseUrl(): string {
-    return getSettings().apiBaseUrl;
-  }
-
-  private get _headers(): Record<string, string> {
-    return {
-      Authorization: `Bearer ${this._apiKey}`,
-      Accept: 'application/json',
-      'User-Agent': 'cmdop-sdk-node/0.1.0',
-    };
+    this._api = createAPI(apiKey);
   }
 
   /**
    * List all agents available for this API key.
+   * Fetches all pages of machines from the workspace.
    *
    * @throws {AuthenticationError} on invalid API key
-   * @throws {PermissionDeniedError} on insufficient permissions
+   * @throws {PermissionError} on insufficient permissions
    */
   async listAgents(): Promise<RemoteAgentInfo[]> {
-    const response = await fetch(`${this._baseUrl}/api/v1/sdk/agents/`, {
-      headers: this._headers,
-    });
+    try {
+      const all: RemoteAgentInfo[] = [];
+      let page = 1;
 
-    if (response.status === 401) {
-      throw new AuthenticationError('Invalid or expired API key');
-    }
-    if (response.status === 403) {
-      throw new PermissionError('API key lacks agent access');
-    }
-    if (!response.ok) {
-      throw new Error(`Discovery API error: ${response.status} ${response.statusText}`);
-    }
+      while (true) {
+        const result = await this._api.machines_machines.machinesList({
+          page,
+          page_size: 100,
+        });
+        all.push(...result.results.map(machineToAgentInfo));
+        if (!result.has_next) break;
+        page++;
+      }
 
-    const data = (await response.json()) as Record<string, unknown>;
-    const items = (data['agents'] ?? data['results'] ?? []) as Record<string, unknown>[];
-    return items.map(parseRemoteAgentInfo);
+      return all;
+    } catch (err) {
+      if (err instanceof MachinesModule.APIError) {
+        if (err.statusCode === 401) {
+          throw new AuthenticationError('Invalid or expired API key');
+        }
+        if (err.statusCode === 403) {
+          throw new PermissionError('API key lacks agent access');
+        }
+      }
+      throw err;
+    }
   }
 
   /**
@@ -144,20 +158,18 @@ export class AgentDiscovery {
    * Returns `null` if not found.
    */
   async getAgent(agentId: string): Promise<RemoteAgentInfo | null> {
-    const response = await fetch(`${this._baseUrl}/api/v1/sdk/agents/${agentId}/`, {
-      headers: this._headers,
-    });
-
-    if (response.status === 404) return null;
-    if (response.status === 401) {
-      throw new AuthenticationError('Invalid or expired API key');
+    try {
+      const machine = await this._api.machines_machines.machinesRetrieve(agentId);
+      return machineToAgentInfo(machine);
+    } catch (err) {
+      if (err instanceof MachinesModule.APIError) {
+        if (err.statusCode === 404) return null;
+        if (err.statusCode === 401) {
+          throw new AuthenticationError('Invalid or expired API key');
+        }
+      }
+      throw err;
     }
-    if (!response.ok) {
-      throw new Error(`Discovery API error: ${response.status} ${response.statusText}`);
-    }
-
-    const data = (await response.json()) as Record<string, unknown>;
-    return parseRemoteAgentInfo(data);
   }
 
   /**
