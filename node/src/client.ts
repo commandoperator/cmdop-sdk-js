@@ -12,7 +12,6 @@ import { TerminalService } from './services/terminal';
 import { FilesService } from './services/files';
 import { AgentService } from './services/agent';
 import { ExtractService } from './services/extract';
-import { BrowserService } from './services/browser';
 import { DownloadService } from './services/download';
 import { SkillsService } from './services/skills';
 
@@ -52,7 +51,6 @@ export class CMDOPClient {
   private _files: FilesService | null = null;
   private _agent: AgentService | null = null;
   private _extract: ExtractService | null = null;
-  private _browser: BrowserService | null = null;
   private _download: DownloadService | null = null;
   private _skills: SkillsService | null = null;
   private _sessionId: string = '';
@@ -261,19 +259,6 @@ export class CMDOPClient {
   }
 
   /**
-   * Browser service for browser automation
-   */
-  get browser(): BrowserService {
-    if (!this._browser) {
-      this._browser = new BrowserService(this._transport.createClient());
-      if (this._sessionId) {
-        this._browser.setSessionId(this._sessionId);
-      }
-    }
-    return this._browser;
-  }
-
-  /**
    * Download service for transferring files from agent to local disk.
    *
    * @example Download a remote file
@@ -374,7 +359,6 @@ export class CMDOPClient {
     this._files = null;
     this._agent = null;
     this._extract = null;
-    this._browser = null;
     this._download = null;
     this._skills = null;
   }
@@ -410,7 +394,6 @@ export class CMDOPClient {
     this._files = null;
     this._agent = null;
     this._extract = null;
-    this._browser = null;
     this._download = null;
     this._skills = null;
     await this._transport.close();

@@ -161,15 +161,12 @@ describe('AgentService', () => {
     });
 
     it('should map all agent modes', async () => {
-      const modes: Array<{ mode: 'chat' | 'terminal' | 'command' | 'router' | 'planner' | 'browser' | 'scraper' | 'form_filler'; type: AgentType }> = [
+      const modes: Array<{ mode: 'chat' | 'terminal' | 'command' | 'router' | 'planner'; type: AgentType }> = [
         { mode: 'chat',        type: AgentType.AGENT_TYPE_CHAT },
         { mode: 'terminal',    type: AgentType.AGENT_TYPE_TERMINAL },
         { mode: 'command',     type: AgentType.AGENT_TYPE_COMMAND },
         { mode: 'router',      type: AgentType.AGENT_TYPE_ROUTER },
         { mode: 'planner',     type: AgentType.AGENT_TYPE_PLANNER },
-        { mode: 'browser',     type: AgentType.AGENT_TYPE_BROWSER },
-        { mode: 'scraper',     type: AgentType.AGENT_TYPE_SCRAPER },
-        { mode: 'form_filler', type: AgentType.AGENT_TYPE_FORM_FILLER },
       ];
 
       for (const { mode, type } of modes) {

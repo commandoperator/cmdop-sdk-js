@@ -42,36 +42,6 @@ export type {
   ExtractResult,
 } from './extract';
 
-export { BrowserService, BrowserSession } from './browser';
-export type {
-  BrowserSessionOptions,
-  NavigateOptions,
-  ClickOptions,
-  TypeOptions,
-  WaitOptions,
-  ExtractOptions as BrowserExtractOptions,
-  ScreenshotOptions,
-  BrowserState,
-  ScrollOptions,
-  ScrollResult,
-  MouseMoveOptions,
-  HoverOptions,
-  PageInfo,
-  BrowserCookie,
-  GetCookiesOptions,
-  ExtractRegexOptions,
-  ExtractFieldDef,
-  ExtractDataOptions,
-  ExtractDataResult,
-  ValidateSelectorsOptions,
-  ValidateSelectorsResult,
-  NetworkEnableOptions,
-  NetworkGetExchangesOptions,
-  NetworkExchange,
-  NetworkStats,
-  NetworkExportHAROptions,
-} from './browser';
-
 export { DownloadService } from './download';
 export type {
   DownloadResult,

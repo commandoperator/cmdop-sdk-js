@@ -109,9 +109,6 @@ function mapAgentMode(mode: AgentMode): AgentType {
     case 'command':     return AgentType.AGENT_TYPE_COMMAND;
     case 'router':      return AgentType.AGENT_TYPE_ROUTER;
     case 'planner':     return AgentType.AGENT_TYPE_PLANNER;
-    case 'browser':     return AgentType.AGENT_TYPE_BROWSER;
-    case 'scraper':     return AgentType.AGENT_TYPE_SCRAPER;
-    case 'form_filler': return AgentType.AGENT_TYPE_FORM_FILLER;
     default:            return AgentType.AGENT_TYPE_CHAT;
   }
 }

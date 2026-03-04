@@ -48,11 +48,6 @@ export {
   SessionInterruptedError,
   // Files
   FileTooLargeError,
-  // Browser
-  BrowserError,
-  BrowserSessionClosedError,
-  BrowserNavigationError,
-  BrowserElementNotFoundError,
   // Rate limiting
   RateLimitError,
 } from './errors';
@@ -189,7 +184,7 @@ export type {
 // Services
 // ============================================================================
 
-export { BaseService, TerminalService, FilesService, AgentService, ExtractService, BrowserService, BrowserSession, DownloadService, SkillsService } from './services';
+export { BaseService, TerminalService, FilesService, AgentService, ExtractService, DownloadService, SkillsService } from './services';
 export type {
   CreateSessionOptions,
   ListSessionsOptions,
@@ -218,33 +213,6 @@ export type {
   ExtractServiceOptions,
   ExtractMetrics,
   ExtractResult,
-  // Browser types
-  BrowserSessionOptions,
-  NavigateOptions,
-  ClickOptions,
-  TypeOptions,
-  WaitOptions,
-  BrowserExtractOptions,
-  ScreenshotOptions,
-  BrowserState,
-  ScrollOptions,
-  ScrollResult,
-  MouseMoveOptions,
-  HoverOptions,
-  PageInfo,
-  BrowserCookie,
-  GetCookiesOptions,
-  ExtractRegexOptions,
-  ExtractFieldDef,
-  ExtractDataOptions,
-  ExtractDataResult,
-  ValidateSelectorsOptions,
-  ValidateSelectorsResult,
-  NetworkEnableOptions,
-  NetworkGetExchangesOptions,
-  NetworkExchange,
-  NetworkStats,
-  NetworkExportHAROptions,
   // Download types
   DownloadResult,
   DownloadMetrics,

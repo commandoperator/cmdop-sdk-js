@@ -13,9 +13,6 @@ export const AgentModeSchema = z.enum([
   'command',
   'router',
   'planner',
-  'browser',
-  'scraper',
-  'form_filler',
 ]);
 export type AgentMode = z.infer<typeof AgentModeSchema>;
 

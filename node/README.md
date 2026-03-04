@@ -139,7 +139,7 @@ const result = await client.download.downloadUrl(
 ```typescript
 // One-shot execution
 const result = await client.agent.run('List files in /tmp', {
-  mode: 'terminal', // 'chat' | 'terminal' | 'command' | 'router' | 'planner' | 'browser' | 'scraper' | 'form_filler'
+  mode: 'terminal', // 'chat' | 'terminal' | 'command' | 'router' | 'planner'
   timeoutSeconds: 60,
   maxTurns: 10,
   maxRetries: 2,
@@ -241,86 +241,9 @@ const raw = await client.extract.run<{ host: string }>(
 );
 ```
 
-### Browser
-
-```typescript
-// Create a session
-const browser = await client.browser.createSession({
-  startUrl: 'https://example.com',
-  headless: true,
-});
-
-// Navigation
-await browser.navigate('https://github.com');
-await browser.reload();
-await browser.goBack();
-await browser.goForward();
-
-// Interaction
-await browser.click({ selector: 'button.submit' });
-await browser.type('hello world', 'input[name="q"]');
-await browser.key('Enter');
-await browser.hover('nav a.menu');
-await browser.mouseMove(100, 200);
-
-// Scroll
-await browser.scrollDown(500);
-await browser.scrollUp(500);
-await browser.scrollToBottom();
-await browser.scrollToTop();
-
-// Wait
-await browser.wait({ selector: '.loaded', timeoutMs: 5000 });
-await browser.wait({ timeMs: 1000 });
-
-// Read content
-const html  = await browser.getHTML('main');
-const text  = await browser.getText('h1');
-const state = await browser.getState();     // url, title, scrollY, ...
-const info  = await browser.getPageInfo();  // url, title, pageHeight, isHttps, cloudflareDetected, ...
-
-// Extract structured data
-const values = await browser.extract('a', { attribute: 'href' });
-const data   = await browser.extractData({
-  fields: [
-    { name: 'title', selector: 'h1',     type: 'text' },
-    { name: 'price', selector: '.price', type: 'text' },
-  ],
-});
-
-// Screenshot (returns Buffer)
-const screenshot = await browser.screenshot({ fullPage: true });
-
-// Fetch (runs inside browser context, respects cookies)
-const json = await browser.fetchJson<{ id: number }>('/api/me');
-const html = await browser.fetchText('https://example.com/page');
-
-// Cookies
-const cookies = await browser.getCookies({ domain: 'example.com' });
-await browser.setCookies([{ name: 'session', value: 'abc', domain: 'example.com' }]);
-
-// Validate selectors
-const valid = await browser.validateSelectors({ selectors: ['h1', '.missing'] });
-
-// Network capture
-await browser.networkEnable();
-const exchanges = await browser.networkGetExchanges({ urlPattern: '/api/' });
-const last      = await browser.networkGetLast('/api/user');
-const stats     = await browser.networkStats();
-const har       = await browser.networkExportHAR();
-await browser.networkClear();
-await browser.networkDisable();
-
-// Cleanup
-await browser.close();
-
-// Or with Symbol.asyncDispose
-await using browser = await client.browser.createSession({ startUrl: 'https://example.com' });
-```
-
 ## Remote Connections
 
-For cloud relay connections, set the session ID before using `files`, `agent`, `extract`, or `browser`.
+For cloud relay connections, set the session ID before using `files`, `agent`, or `extract`.
 
 ```typescript
 const client = CMDOPClient.remote('cmdop_live_xxx');
@@ -419,10 +342,6 @@ import {
   FeatureNotAvailableError,
   SessionInterruptedError,
   FileTooLargeError,
-  BrowserError,
-  BrowserSessionClosedError,
-  BrowserNavigationError,
-  BrowserElementNotFoundError,
   RateLimitError,
 } from '@cmdop/node';
 

@@ -21,10 +21,6 @@ import {
   FeatureNotAvailableError,
   SessionInterruptedError,
   FileTooLargeError,
-  BrowserError,
-  BrowserSessionClosedError,
-  BrowserNavigationError,
-  BrowserElementNotFoundError,
   RateLimitError,
   mapGrpcError,
   withErrorMapping,
@@ -205,77 +201,6 @@ describe('FileTooLargeError', () => {
     expect(err.code).toBe('FILE_TOO_LARGE');
     expect(err).toBeInstanceOf(CMDOPError);
     expect(err.message).toContain('/tmp/big.bin');
-  });
-});
-
-// ============================================================================
-// Browser Errors
-// ============================================================================
-
-describe('BrowserError', () => {
-  it('has correct name and default code', () => {
-    const err = new BrowserError('something failed');
-    expect(err.name).toBe('BrowserError');
-    expect(err.code).toBe('BROWSER_ERROR');
-    expect(err).toBeInstanceOf(CMDOPError);
-  });
-});
-
-describe('BrowserSessionClosedError', () => {
-  it('has correct name and helpful message', () => {
-    const err = new BrowserSessionClosedError();
-    expect(err.name).toBe('BrowserSessionClosedError');
-    expect(err.code).toBe('BROWSER_SESSION_CLOSED');
-    expect(err.message).toContain('CMDOP Desktop');
-    expect(err).toBeInstanceOf(BrowserError);
-  });
-
-  it('appends errorDetail when provided', () => {
-    const err = new BrowserSessionClosedError('target closed');
-    expect(err.message).toContain('target closed');
-  });
-});
-
-describe('BrowserNavigationError', () => {
-  it('has correct name and url', () => {
-    const err = new BrowserNavigationError('https://example.com');
-    expect(err.name).toBe('BrowserNavigationError');
-    expect(err.url).toBe('https://example.com');
-    expect(err.code).toBe('BROWSER_NAVIGATION_ERROR');
-    expect(err.message).toContain('https://example.com');
-    expect(err).toBeInstanceOf(BrowserError);
-  });
-
-  it('includes timeout hint when errorDetail contains timeout', () => {
-    const err = new BrowserNavigationError('https://slow.com', 'Timeout exceeded');
-    expect(err.message).toContain('timeout');
-  });
-
-  it('includes session closed hint when errorDetail contains target closed', () => {
-    const err = new BrowserNavigationError('https://x.com', 'Target closed');
-    expect(err.message).toContain('Restart');
-  });
-
-  it('includes raw details for other errors', () => {
-    const err = new BrowserNavigationError('https://x.com', 'DNS resolution failed');
-    expect(err.message).toContain('DNS resolution failed');
-  });
-});
-
-describe('BrowserElementNotFoundError', () => {
-  it('has correct name and selector', () => {
-    const err = new BrowserElementNotFoundError('#submit-btn');
-    expect(err.name).toBe('BrowserElementNotFoundError');
-    expect(err.selector).toBe('#submit-btn');
-    expect(err.operation).toBe('find');
-    expect(err.code).toBe('BROWSER_ELEMENT_NOT_FOUND');
-    expect(err.message).toContain('#submit-btn');
-    expect(err).toBeInstanceOf(BrowserError);
-  });
-
-  it('accepts custom operation', () => {
-    const err = new BrowserElementNotFoundError('.btn', 'click');
-    expect(err.operation).toBe('click');
   });
 });
 

@@ -14,131 +14,6 @@ import { TunnelClose, TunnelCreate, TunnelData } from "./tunnel";
 
 export const protobufPackage = "terminal";
 
-/** Browser command types */
-export enum BrowserCommandType {
-  BROWSER_CMD_CREATE_SESSION = 0,
-  BROWSER_CMD_CLOSE_SESSION = 1,
-  BROWSER_CMD_NAVIGATE = 2,
-  BROWSER_CMD_CLICK = 3,
-  BROWSER_CMD_TYPE = 4,
-  BROWSER_CMD_WAIT = 5,
-  BROWSER_CMD_EXTRACT = 6,
-  BROWSER_CMD_EXTRACT_REGEX = 7,
-  BROWSER_CMD_GET_HTML = 8,
-  BROWSER_CMD_GET_TEXT = 9,
-  BROWSER_CMD_EXECUTE_SCRIPT = 10,
-  BROWSER_CMD_SCREENSHOT = 11,
-  BROWSER_CMD_GET_STATE = 12,
-  BROWSER_CMD_SET_COOKIES = 13,
-  BROWSER_CMD_GET_COOKIES = 14,
-  /** BROWSER_CMD_VALIDATE_SELECTORS - Selector validation & data extraction (v2.17.0) */
-  BROWSER_CMD_VALIDATE_SELECTORS = 15,
-  BROWSER_CMD_EXTRACT_DATA = 16,
-  UNRECOGNIZED = -1,
-}
-
-export function browserCommandTypeFromJSON(object: any): BrowserCommandType {
-  switch (object) {
-    case 0:
-    case "BROWSER_CMD_CREATE_SESSION":
-      return BrowserCommandType.BROWSER_CMD_CREATE_SESSION;
-    case 1:
-    case "BROWSER_CMD_CLOSE_SESSION":
-      return BrowserCommandType.BROWSER_CMD_CLOSE_SESSION;
-    case 2:
-    case "BROWSER_CMD_NAVIGATE":
-      return BrowserCommandType.BROWSER_CMD_NAVIGATE;
-    case 3:
-    case "BROWSER_CMD_CLICK":
-      return BrowserCommandType.BROWSER_CMD_CLICK;
-    case 4:
-    case "BROWSER_CMD_TYPE":
-      return BrowserCommandType.BROWSER_CMD_TYPE;
-    case 5:
-    case "BROWSER_CMD_WAIT":
-      return BrowserCommandType.BROWSER_CMD_WAIT;
-    case 6:
-    case "BROWSER_CMD_EXTRACT":
-      return BrowserCommandType.BROWSER_CMD_EXTRACT;
-    case 7:
-    case "BROWSER_CMD_EXTRACT_REGEX":
-      return BrowserCommandType.BROWSER_CMD_EXTRACT_REGEX;
-    case 8:
-    case "BROWSER_CMD_GET_HTML":
-      return BrowserCommandType.BROWSER_CMD_GET_HTML;
-    case 9:
-    case "BROWSER_CMD_GET_TEXT":
-      return BrowserCommandType.BROWSER_CMD_GET_TEXT;
-    case 10:
-    case "BROWSER_CMD_EXECUTE_SCRIPT":
-      return BrowserCommandType.BROWSER_CMD_EXECUTE_SCRIPT;
-    case 11:
-    case "BROWSER_CMD_SCREENSHOT":
-      return BrowserCommandType.BROWSER_CMD_SCREENSHOT;
-    case 12:
-    case "BROWSER_CMD_GET_STATE":
-      return BrowserCommandType.BROWSER_CMD_GET_STATE;
-    case 13:
-    case "BROWSER_CMD_SET_COOKIES":
-      return BrowserCommandType.BROWSER_CMD_SET_COOKIES;
-    case 14:
-    case "BROWSER_CMD_GET_COOKIES":
-      return BrowserCommandType.BROWSER_CMD_GET_COOKIES;
-    case 15:
-    case "BROWSER_CMD_VALIDATE_SELECTORS":
-      return BrowserCommandType.BROWSER_CMD_VALIDATE_SELECTORS;
-    case 16:
-    case "BROWSER_CMD_EXTRACT_DATA":
-      return BrowserCommandType.BROWSER_CMD_EXTRACT_DATA;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return BrowserCommandType.UNRECOGNIZED;
-  }
-}
-
-export function browserCommandTypeToJSON(object: BrowserCommandType): string {
-  switch (object) {
-    case BrowserCommandType.BROWSER_CMD_CREATE_SESSION:
-      return "BROWSER_CMD_CREATE_SESSION";
-    case BrowserCommandType.BROWSER_CMD_CLOSE_SESSION:
-      return "BROWSER_CMD_CLOSE_SESSION";
-    case BrowserCommandType.BROWSER_CMD_NAVIGATE:
-      return "BROWSER_CMD_NAVIGATE";
-    case BrowserCommandType.BROWSER_CMD_CLICK:
-      return "BROWSER_CMD_CLICK";
-    case BrowserCommandType.BROWSER_CMD_TYPE:
-      return "BROWSER_CMD_TYPE";
-    case BrowserCommandType.BROWSER_CMD_WAIT:
-      return "BROWSER_CMD_WAIT";
-    case BrowserCommandType.BROWSER_CMD_EXTRACT:
-      return "BROWSER_CMD_EXTRACT";
-    case BrowserCommandType.BROWSER_CMD_EXTRACT_REGEX:
-      return "BROWSER_CMD_EXTRACT_REGEX";
-    case BrowserCommandType.BROWSER_CMD_GET_HTML:
-      return "BROWSER_CMD_GET_HTML";
-    case BrowserCommandType.BROWSER_CMD_GET_TEXT:
-      return "BROWSER_CMD_GET_TEXT";
-    case BrowserCommandType.BROWSER_CMD_EXECUTE_SCRIPT:
-      return "BROWSER_CMD_EXECUTE_SCRIPT";
-    case BrowserCommandType.BROWSER_CMD_SCREENSHOT:
-      return "BROWSER_CMD_SCREENSHOT";
-    case BrowserCommandType.BROWSER_CMD_GET_STATE:
-      return "BROWSER_CMD_GET_STATE";
-    case BrowserCommandType.BROWSER_CMD_SET_COOKIES:
-      return "BROWSER_CMD_SET_COOKIES";
-    case BrowserCommandType.BROWSER_CMD_GET_COOKIES:
-      return "BROWSER_CMD_GET_COOKIES";
-    case BrowserCommandType.BROWSER_CMD_VALIDATE_SELECTORS:
-      return "BROWSER_CMD_VALIDATE_SELECTORS";
-    case BrowserCommandType.BROWSER_CMD_EXTRACT_DATA:
-      return "BROWSER_CMD_EXTRACT_DATA";
-    case BrowserCommandType.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
 /** Notification delivery method */
 export enum NotificationMethod {
   /** NOTIFICATION_METHOD_AUTO - System decides (visual if available, else audio) */
@@ -201,12 +76,6 @@ export enum AgentType {
   AGENT_TYPE_ROUTER = 3,
   /** AGENT_TYPE_PLANNER - Planner agent (complex tasks) */
   AGENT_TYPE_PLANNER = 4,
-  /** AGENT_TYPE_BROWSER - Browser automation agent (v2.13.0) */
-  AGENT_TYPE_BROWSER = 5,
-  /** AGENT_TYPE_SCRAPER - Web scraping agent (v2.13.0) */
-  AGENT_TYPE_SCRAPER = 6,
-  /** AGENT_TYPE_FORM_FILLER - Form automation agent (v2.13.0) */
-  AGENT_TYPE_FORM_FILLER = 7,
   UNRECOGNIZED = -1,
 }
 
@@ -227,15 +96,6 @@ export function agentTypeFromJSON(object: any): AgentType {
     case 4:
     case "AGENT_TYPE_PLANNER":
       return AgentType.AGENT_TYPE_PLANNER;
-    case 5:
-    case "AGENT_TYPE_BROWSER":
-      return AgentType.AGENT_TYPE_BROWSER;
-    case 6:
-    case "AGENT_TYPE_SCRAPER":
-      return AgentType.AGENT_TYPE_SCRAPER;
-    case 7:
-    case "AGENT_TYPE_FORM_FILLER":
-      return AgentType.AGENT_TYPE_FORM_FILLER;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -255,12 +115,6 @@ export function agentTypeToJSON(object: AgentType): string {
       return "AGENT_TYPE_ROUTER";
     case AgentType.AGENT_TYPE_PLANNER:
       return "AGENT_TYPE_PLANNER";
-    case AgentType.AGENT_TYPE_BROWSER:
-      return "AGENT_TYPE_BROWSER";
-    case AgentType.AGENT_TYPE_SCRAPER:
-      return "AGENT_TYPE_SCRAPER";
-    case AgentType.AGENT_TYPE_FORM_FILLER:
-      return "AGENT_TYPE_FORM_FILLER";
     case AgentType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -298,9 +152,6 @@ export interface ControlMessage {
     /** Update session config */
     { $case: "configUpdate"; configUpdate: ConfigUpdateCommand }
     | //
-    /** History request (agent reads shell history file) */
-    { $case: "getHistory"; getHistory: GetHistoryCommand }
-    | //
     /** File operations (routed through streaming) */
     { $case: "fileOperation"; fileOperation: FileOperationRequest }
     | //
@@ -329,12 +180,6 @@ export interface ControlMessage {
     { $case: "agentCancel"; agentCancel: AgentCancelCommand }
     | //
     /**
-     * Browser Direct Control (v2.16.0)
-     * SDK → Django → Agent browser automation without LLM
-     */
-    { $case: "browser"; browser: BrowserCommand }
-    | //
-    /**
      * Skills relay (v2.24.0)
      * SDK → Django → Agent skill management and execution
      */
@@ -346,19 +191,6 @@ export interface ControlMessage {
     /** Execute a skill */
     { $case: "skillRun"; skillRun: SkillRunCommand }
     | undefined;
-}
-
-/**
- * Browser command wrapper
- * Contains command type and JSON-encoded payload
- */
-export interface BrowserCommand {
-  /** Unique request ID for correlation */
-  requestId: string;
-  /** Command type */
-  type: BrowserCommandType;
-  /** JSON-encoded request (BrowserNavigateRequest, etc.) */
-  payloadJson: string;
 }
 
 /** Push notification to show on agent's desktop */
@@ -444,16 +276,6 @@ export interface ConfigUpdateCommand {
   config: SessionConfig | undefined;
 }
 
-/** Get history command (request shell history from agent) */
-export interface GetHistoryCommand {
-  /** Max commands to return */
-  limit: number;
-  /** Offset for pagination */
-  offset: number;
-  /** History source: "shell" (file), "session" (memory) */
-  source: string;
-}
-
 /**
  * Refresh permissions command (v2.3.0)
  * Triggers agent to re-check all protected directories
@@ -482,47 +304,11 @@ export interface AgentRunCommand {
    * If provided, agent returns output_json matching this schema
    */
   outputSchema: string;
-  /** Browser agent options (v2.13.0) */
-  browserOptions: BrowserAgentOptions | undefined;
 }
 
 export interface AgentRunCommand_OptionsEntry {
   key: string;
   value: string;
-}
-
-/** Browser agent configuration options (v2.13.0) */
-export interface BrowserAgentOptions {
-  /** Session configuration */
-  sessionType: string;
-  /** Browser profile ID for persistent sessions */
-  profileId: string;
-  /** Initial URL to navigate to */
-  startUrl: string;
-  /** Perception settings */
-  useAxtree: boolean;
-  /** Use differential perception (default: true) */
-  useDiff: boolean;
-  /** Max tokens for state (default: 8000) */
-  maxTokens: number;
-  /** Stealth settings */
-  stealthLevel: string;
-  /** Enable proxy rotation */
-  useProxy: boolean;
-  /** Specific proxy URL */
-  proxyUrl: string;
-  /** Session limits */
-  maxActions: number;
-  /** Navigation timeout (default: 30000) */
-  navigationTimeoutMs: number;
-  /** Action timeout (default: 10000) */
-  actionTimeoutMs: number;
-  /** Screenshot settings */
-  screenshotOnAction: boolean;
-  /** Full page screenshots */
-  screenshotFullpage: boolean;
-  /** png, jpeg (default: png) */
-  screenshotFormat: string;
 }
 
 /**
@@ -608,9 +394,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
       case "configUpdate":
         ConfigUpdateCommand.encode(message.payload.configUpdate, writer.uint32(330).fork()).join();
         break;
-      case "getHistory":
-        GetHistoryCommand.encode(message.payload.getHistory, writer.uint32(402).fork()).join();
-        break;
       case "fileOperation":
         FileOperationRequest.encode(message.payload.fileOperation, writer.uint32(482).fork()).join();
         break;
@@ -637,9 +420,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
         break;
       case "agentCancel":
         AgentCancelCommand.encode(message.payload.agentCancel, writer.uint32(890).fork()).join();
-        break;
-      case "browser":
-        BrowserCommand.encode(message.payload.browser, writer.uint32(962).fork()).join();
         break;
       case "skillList":
         SkillListCommand.encode(message.payload.skillList, writer.uint32(1042).fork()).join();
@@ -750,14 +530,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
           };
           continue;
         }
-        case 50: {
-          if (tag !== 402) {
-            break;
-          }
-
-          message.payload = { $case: "getHistory", getHistory: GetHistoryCommand.decode(reader, reader.uint32()) };
-          continue;
-        }
         case 60: {
           if (tag !== 482) {
             break;
@@ -842,14 +614,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
           message.payload = { $case: "agentCancel", agentCancel: AgentCancelCommand.decode(reader, reader.uint32()) };
           continue;
         }
-        case 120: {
-          if (tag !== 962) {
-            break;
-          }
-
-          message.payload = { $case: "browser", browser: BrowserCommand.decode(reader, reader.uint32()) };
-          continue;
-        }
         case 130: {
           if (tag !== 1042) {
             break;
@@ -913,10 +677,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
         ? { $case: "configUpdate", configUpdate: ConfigUpdateCommand.fromJSON(object.configUpdate) }
         : isSet(object.config_update)
         ? { $case: "configUpdate", configUpdate: ConfigUpdateCommand.fromJSON(object.config_update) }
-        : isSet(object.getHistory)
-        ? { $case: "getHistory", getHistory: GetHistoryCommand.fromJSON(object.getHistory) }
-        : isSet(object.get_history)
-        ? { $case: "getHistory", getHistory: GetHistoryCommand.fromJSON(object.get_history) }
         : isSet(object.fileOperation)
         ? { $case: "fileOperation", fileOperation: FileOperationRequest.fromJSON(object.fileOperation) }
         : isSet(object.file_operation)
@@ -965,8 +725,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
         ? { $case: "agentCancel", agentCancel: AgentCancelCommand.fromJSON(object.agentCancel) }
         : isSet(object.agent_cancel)
         ? { $case: "agentCancel", agentCancel: AgentCancelCommand.fromJSON(object.agent_cancel) }
-        : isSet(object.browser)
-        ? { $case: "browser", browser: BrowserCommand.fromJSON(object.browser) }
         : isSet(object.skillList)
         ? { $case: "skillList", skillList: SkillListCommand.fromJSON(object.skillList) }
         : isSet(object.skill_list)
@@ -1007,8 +765,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
       obj.ping = PingCommand.toJSON(message.payload.ping);
     } else if (message.payload?.$case === "configUpdate") {
       obj.configUpdate = ConfigUpdateCommand.toJSON(message.payload.configUpdate);
-    } else if (message.payload?.$case === "getHistory") {
-      obj.getHistory = GetHistoryCommand.toJSON(message.payload.getHistory);
     } else if (message.payload?.$case === "fileOperation") {
       obj.fileOperation = FileOperationRequest.toJSON(message.payload.fileOperation);
     } else if (message.payload?.$case === "pushNotification") {
@@ -1027,8 +783,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
       obj.agentRun = AgentRunCommand.toJSON(message.payload.agentRun);
     } else if (message.payload?.$case === "agentCancel") {
       obj.agentCancel = AgentCancelCommand.toJSON(message.payload.agentCancel);
-    } else if (message.payload?.$case === "browser") {
-      obj.browser = BrowserCommand.toJSON(message.payload.browser);
     } else if (message.payload?.$case === "skillList") {
       obj.skillList = SkillListCommand.toJSON(message.payload.skillList);
     } else if (message.payload?.$case === "skillShow") {
@@ -1100,15 +854,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
           message.payload = {
             $case: "configUpdate",
             configUpdate: ConfigUpdateCommand.fromPartial(object.payload.configUpdate),
-          };
-        }
-        break;
-      }
-      case "getHistory": {
-        if (object.payload?.getHistory !== undefined && object.payload?.getHistory !== null) {
-          message.payload = {
-            $case: "getHistory",
-            getHistory: GetHistoryCommand.fromPartial(object.payload.getHistory),
           };
         }
         break;
@@ -1185,12 +930,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
         }
         break;
       }
-      case "browser": {
-        if (object.payload?.browser !== undefined && object.payload?.browser !== null) {
-          message.payload = { $case: "browser", browser: BrowserCommand.fromPartial(object.payload.browser) };
-        }
-        break;
-      }
       case "skillList": {
         if (object.payload?.skillList !== undefined && object.payload?.skillList !== null) {
           message.payload = { $case: "skillList", skillList: SkillListCommand.fromPartial(object.payload.skillList) };
@@ -1210,106 +949,6 @@ export const ControlMessage: MessageFns<ControlMessage> = {
         break;
       }
     }
-    return message;
-  },
-};
-
-function createBaseBrowserCommand(): BrowserCommand {
-  return { requestId: "", type: 0, payloadJson: "" };
-}
-
-export const BrowserCommand: MessageFns<BrowserCommand> = {
-  encode(message: BrowserCommand, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.requestId !== "") {
-      writer.uint32(10).string(message.requestId);
-    }
-    if (message.type !== 0) {
-      writer.uint32(16).int32(message.type);
-    }
-    if (message.payloadJson !== "") {
-      writer.uint32(26).string(message.payloadJson);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): BrowserCommand {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBrowserCommand();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.requestId = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.type = reader.int32() as any;
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.payloadJson = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): BrowserCommand {
-    return {
-      requestId: isSet(object.requestId)
-        ? globalThis.String(object.requestId)
-        : isSet(object.request_id)
-        ? globalThis.String(object.request_id)
-        : "",
-      type: isSet(object.type) ? browserCommandTypeFromJSON(object.type) : 0,
-      payloadJson: isSet(object.payloadJson)
-        ? globalThis.String(object.payloadJson)
-        : isSet(object.payload_json)
-        ? globalThis.String(object.payload_json)
-        : "",
-    };
-  },
-
-  toJSON(message: BrowserCommand): unknown {
-    const obj: any = {};
-    if (message.requestId !== "") {
-      obj.requestId = message.requestId;
-    }
-    if (message.type !== 0) {
-      obj.type = browserCommandTypeToJSON(message.type);
-    }
-    if (message.payloadJson !== "") {
-      obj.payloadJson = message.payloadJson;
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<BrowserCommand>): BrowserCommand {
-    return BrowserCommand.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<BrowserCommand>): BrowserCommand {
-    const message = createBaseBrowserCommand();
-    message.requestId = object.requestId ?? "";
-    message.type = object.type ?? 0;
-    message.payloadJson = object.payloadJson ?? "";
     return message;
   },
 };
@@ -2141,98 +1780,6 @@ export const ConfigUpdateCommand: MessageFns<ConfigUpdateCommand> = {
   },
 };
 
-function createBaseGetHistoryCommand(): GetHistoryCommand {
-  return { limit: 0, offset: 0, source: "" };
-}
-
-export const GetHistoryCommand: MessageFns<GetHistoryCommand> = {
-  encode(message: GetHistoryCommand, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.limit !== 0) {
-      writer.uint32(8).int32(message.limit);
-    }
-    if (message.offset !== 0) {
-      writer.uint32(16).int32(message.offset);
-    }
-    if (message.source !== "") {
-      writer.uint32(26).string(message.source);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): GetHistoryCommand {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGetHistoryCommand();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.limit = reader.int32();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.offset = reader.int32();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.source = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GetHistoryCommand {
-    return {
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
-      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
-      source: isSet(object.source) ? globalThis.String(object.source) : "",
-    };
-  },
-
-  toJSON(message: GetHistoryCommand): unknown {
-    const obj: any = {};
-    if (message.limit !== 0) {
-      obj.limit = Math.round(message.limit);
-    }
-    if (message.offset !== 0) {
-      obj.offset = Math.round(message.offset);
-    }
-    if (message.source !== "") {
-      obj.source = message.source;
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<GetHistoryCommand>): GetHistoryCommand {
-    return GetHistoryCommand.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<GetHistoryCommand>): GetHistoryCommand {
-    const message = createBaseGetHistoryCommand();
-    message.limit = object.limit ?? 0;
-    message.offset = object.offset ?? 0;
-    message.source = object.source ?? "";
-    return message;
-  },
-};
-
 function createBaseRefreshPermissionsCommand(): RefreshPermissionsCommand {
   return {};
 }
@@ -2277,15 +1824,7 @@ export const RefreshPermissionsCommand: MessageFns<RefreshPermissionsCommand> = 
 };
 
 function createBaseAgentRunCommand(): AgentRunCommand {
-  return {
-    requestId: "",
-    prompt: "",
-    agentType: 0,
-    options: {},
-    streamEvents: false,
-    outputSchema: "",
-    browserOptions: undefined,
-  };
+  return { requestId: "", prompt: "", agentType: 0, options: {}, streamEvents: false, outputSchema: "" };
 }
 
 export const AgentRunCommand: MessageFns<AgentRunCommand> = {
@@ -2307,9 +1846,6 @@ export const AgentRunCommand: MessageFns<AgentRunCommand> = {
     }
     if (message.outputSchema !== "") {
       writer.uint32(50).string(message.outputSchema);
-    }
-    if (message.browserOptions !== undefined) {
-      BrowserAgentOptions.encode(message.browserOptions, writer.uint32(58).fork()).join();
     }
     return writer;
   },
@@ -2372,14 +1908,6 @@ export const AgentRunCommand: MessageFns<AgentRunCommand> = {
           message.outputSchema = reader.string();
           continue;
         }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.browserOptions = BrowserAgentOptions.decode(reader, reader.uint32());
-          continue;
-        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2421,11 +1949,6 @@ export const AgentRunCommand: MessageFns<AgentRunCommand> = {
         : isSet(object.output_schema)
         ? globalThis.String(object.output_schema)
         : "",
-      browserOptions: isSet(object.browserOptions)
-        ? BrowserAgentOptions.fromJSON(object.browserOptions)
-        : isSet(object.browser_options)
-        ? BrowserAgentOptions.fromJSON(object.browser_options)
-        : undefined,
     };
   },
 
@@ -2455,9 +1978,6 @@ export const AgentRunCommand: MessageFns<AgentRunCommand> = {
     if (message.outputSchema !== "") {
       obj.outputSchema = message.outputSchema;
     }
-    if (message.browserOptions !== undefined) {
-      obj.browserOptions = BrowserAgentOptions.toJSON(message.browserOptions);
-    }
     return obj;
   },
 
@@ -2480,9 +2000,6 @@ export const AgentRunCommand: MessageFns<AgentRunCommand> = {
     );
     message.streamEvents = object.streamEvents ?? false;
     message.outputSchema = object.outputSchema ?? "";
-    message.browserOptions = (object.browserOptions !== undefined && object.browserOptions !== null)
-      ? BrowserAgentOptions.fromPartial(object.browserOptions)
-      : undefined;
     return message;
   },
 };
@@ -2559,366 +2076,6 @@ export const AgentRunCommand_OptionsEntry: MessageFns<AgentRunCommand_OptionsEnt
     const message = createBaseAgentRunCommand_OptionsEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
-    return message;
-  },
-};
-
-function createBaseBrowserAgentOptions(): BrowserAgentOptions {
-  return {
-    sessionType: "",
-    profileId: "",
-    startUrl: "",
-    useAxtree: false,
-    useDiff: false,
-    maxTokens: 0,
-    stealthLevel: "",
-    useProxy: false,
-    proxyUrl: "",
-    maxActions: 0,
-    navigationTimeoutMs: 0,
-    actionTimeoutMs: 0,
-    screenshotOnAction: false,
-    screenshotFullpage: false,
-    screenshotFormat: "",
-  };
-}
-
-export const BrowserAgentOptions: MessageFns<BrowserAgentOptions> = {
-  encode(message: BrowserAgentOptions, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.sessionType !== "") {
-      writer.uint32(10).string(message.sessionType);
-    }
-    if (message.profileId !== "") {
-      writer.uint32(18).string(message.profileId);
-    }
-    if (message.startUrl !== "") {
-      writer.uint32(26).string(message.startUrl);
-    }
-    if (message.useAxtree !== false) {
-      writer.uint32(32).bool(message.useAxtree);
-    }
-    if (message.useDiff !== false) {
-      writer.uint32(40).bool(message.useDiff);
-    }
-    if (message.maxTokens !== 0) {
-      writer.uint32(48).int32(message.maxTokens);
-    }
-    if (message.stealthLevel !== "") {
-      writer.uint32(58).string(message.stealthLevel);
-    }
-    if (message.useProxy !== false) {
-      writer.uint32(64).bool(message.useProxy);
-    }
-    if (message.proxyUrl !== "") {
-      writer.uint32(74).string(message.proxyUrl);
-    }
-    if (message.maxActions !== 0) {
-      writer.uint32(80).int32(message.maxActions);
-    }
-    if (message.navigationTimeoutMs !== 0) {
-      writer.uint32(88).int32(message.navigationTimeoutMs);
-    }
-    if (message.actionTimeoutMs !== 0) {
-      writer.uint32(96).int32(message.actionTimeoutMs);
-    }
-    if (message.screenshotOnAction !== false) {
-      writer.uint32(104).bool(message.screenshotOnAction);
-    }
-    if (message.screenshotFullpage !== false) {
-      writer.uint32(112).bool(message.screenshotFullpage);
-    }
-    if (message.screenshotFormat !== "") {
-      writer.uint32(122).string(message.screenshotFormat);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): BrowserAgentOptions {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBrowserAgentOptions();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.sessionType = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.profileId = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.startUrl = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.useAxtree = reader.bool();
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.useDiff = reader.bool();
-          continue;
-        }
-        case 6: {
-          if (tag !== 48) {
-            break;
-          }
-
-          message.maxTokens = reader.int32();
-          continue;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.stealthLevel = reader.string();
-          continue;
-        }
-        case 8: {
-          if (tag !== 64) {
-            break;
-          }
-
-          message.useProxy = reader.bool();
-          continue;
-        }
-        case 9: {
-          if (tag !== 74) {
-            break;
-          }
-
-          message.proxyUrl = reader.string();
-          continue;
-        }
-        case 10: {
-          if (tag !== 80) {
-            break;
-          }
-
-          message.maxActions = reader.int32();
-          continue;
-        }
-        case 11: {
-          if (tag !== 88) {
-            break;
-          }
-
-          message.navigationTimeoutMs = reader.int32();
-          continue;
-        }
-        case 12: {
-          if (tag !== 96) {
-            break;
-          }
-
-          message.actionTimeoutMs = reader.int32();
-          continue;
-        }
-        case 13: {
-          if (tag !== 104) {
-            break;
-          }
-
-          message.screenshotOnAction = reader.bool();
-          continue;
-        }
-        case 14: {
-          if (tag !== 112) {
-            break;
-          }
-
-          message.screenshotFullpage = reader.bool();
-          continue;
-        }
-        case 15: {
-          if (tag !== 122) {
-            break;
-          }
-
-          message.screenshotFormat = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): BrowserAgentOptions {
-    return {
-      sessionType: isSet(object.sessionType)
-        ? globalThis.String(object.sessionType)
-        : isSet(object.session_type)
-        ? globalThis.String(object.session_type)
-        : "",
-      profileId: isSet(object.profileId)
-        ? globalThis.String(object.profileId)
-        : isSet(object.profile_id)
-        ? globalThis.String(object.profile_id)
-        : "",
-      startUrl: isSet(object.startUrl)
-        ? globalThis.String(object.startUrl)
-        : isSet(object.start_url)
-        ? globalThis.String(object.start_url)
-        : "",
-      useAxtree: isSet(object.useAxtree)
-        ? globalThis.Boolean(object.useAxtree)
-        : isSet(object.use_axtree)
-        ? globalThis.Boolean(object.use_axtree)
-        : false,
-      useDiff: isSet(object.useDiff)
-        ? globalThis.Boolean(object.useDiff)
-        : isSet(object.use_diff)
-        ? globalThis.Boolean(object.use_diff)
-        : false,
-      maxTokens: isSet(object.maxTokens)
-        ? globalThis.Number(object.maxTokens)
-        : isSet(object.max_tokens)
-        ? globalThis.Number(object.max_tokens)
-        : 0,
-      stealthLevel: isSet(object.stealthLevel)
-        ? globalThis.String(object.stealthLevel)
-        : isSet(object.stealth_level)
-        ? globalThis.String(object.stealth_level)
-        : "",
-      useProxy: isSet(object.useProxy)
-        ? globalThis.Boolean(object.useProxy)
-        : isSet(object.use_proxy)
-        ? globalThis.Boolean(object.use_proxy)
-        : false,
-      proxyUrl: isSet(object.proxyUrl)
-        ? globalThis.String(object.proxyUrl)
-        : isSet(object.proxy_url)
-        ? globalThis.String(object.proxy_url)
-        : "",
-      maxActions: isSet(object.maxActions)
-        ? globalThis.Number(object.maxActions)
-        : isSet(object.max_actions)
-        ? globalThis.Number(object.max_actions)
-        : 0,
-      navigationTimeoutMs: isSet(object.navigationTimeoutMs)
-        ? globalThis.Number(object.navigationTimeoutMs)
-        : isSet(object.navigation_timeout_ms)
-        ? globalThis.Number(object.navigation_timeout_ms)
-        : 0,
-      actionTimeoutMs: isSet(object.actionTimeoutMs)
-        ? globalThis.Number(object.actionTimeoutMs)
-        : isSet(object.action_timeout_ms)
-        ? globalThis.Number(object.action_timeout_ms)
-        : 0,
-      screenshotOnAction: isSet(object.screenshotOnAction)
-        ? globalThis.Boolean(object.screenshotOnAction)
-        : isSet(object.screenshot_on_action)
-        ? globalThis.Boolean(object.screenshot_on_action)
-        : false,
-      screenshotFullpage: isSet(object.screenshotFullpage)
-        ? globalThis.Boolean(object.screenshotFullpage)
-        : isSet(object.screenshot_fullpage)
-        ? globalThis.Boolean(object.screenshot_fullpage)
-        : false,
-      screenshotFormat: isSet(object.screenshotFormat)
-        ? globalThis.String(object.screenshotFormat)
-        : isSet(object.screenshot_format)
-        ? globalThis.String(object.screenshot_format)
-        : "",
-    };
-  },
-
-  toJSON(message: BrowserAgentOptions): unknown {
-    const obj: any = {};
-    if (message.sessionType !== "") {
-      obj.sessionType = message.sessionType;
-    }
-    if (message.profileId !== "") {
-      obj.profileId = message.profileId;
-    }
-    if (message.startUrl !== "") {
-      obj.startUrl = message.startUrl;
-    }
-    if (message.useAxtree !== false) {
-      obj.useAxtree = message.useAxtree;
-    }
-    if (message.useDiff !== false) {
-      obj.useDiff = message.useDiff;
-    }
-    if (message.maxTokens !== 0) {
-      obj.maxTokens = Math.round(message.maxTokens);
-    }
-    if (message.stealthLevel !== "") {
-      obj.stealthLevel = message.stealthLevel;
-    }
-    if (message.useProxy !== false) {
-      obj.useProxy = message.useProxy;
-    }
-    if (message.proxyUrl !== "") {
-      obj.proxyUrl = message.proxyUrl;
-    }
-    if (message.maxActions !== 0) {
-      obj.maxActions = Math.round(message.maxActions);
-    }
-    if (message.navigationTimeoutMs !== 0) {
-      obj.navigationTimeoutMs = Math.round(message.navigationTimeoutMs);
-    }
-    if (message.actionTimeoutMs !== 0) {
-      obj.actionTimeoutMs = Math.round(message.actionTimeoutMs);
-    }
-    if (message.screenshotOnAction !== false) {
-      obj.screenshotOnAction = message.screenshotOnAction;
-    }
-    if (message.screenshotFullpage !== false) {
-      obj.screenshotFullpage = message.screenshotFullpage;
-    }
-    if (message.screenshotFormat !== "") {
-      obj.screenshotFormat = message.screenshotFormat;
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<BrowserAgentOptions>): BrowserAgentOptions {
-    return BrowserAgentOptions.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<BrowserAgentOptions>): BrowserAgentOptions {
-    const message = createBaseBrowserAgentOptions();
-    message.sessionType = object.sessionType ?? "";
-    message.profileId = object.profileId ?? "";
-    message.startUrl = object.startUrl ?? "";
-    message.useAxtree = object.useAxtree ?? false;
-    message.useDiff = object.useDiff ?? false;
-    message.maxTokens = object.maxTokens ?? 0;
-    message.stealthLevel = object.stealthLevel ?? "";
-    message.useProxy = object.useProxy ?? false;
-    message.proxyUrl = object.proxyUrl ?? "";
-    message.maxActions = object.maxActions ?? 0;
-    message.navigationTimeoutMs = object.navigationTimeoutMs ?? 0;
-    message.actionTimeoutMs = object.actionTimeoutMs ?? 0;
-    message.screenshotOnAction = object.screenshotOnAction ?? false;
-    message.screenshotFullpage = object.screenshotFullpage ?? false;
-    message.screenshotFormat = object.screenshotFormat ?? "";
     return message;
   },
 };
