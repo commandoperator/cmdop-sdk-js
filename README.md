@@ -1,6 +1,6 @@
 # CMDOP JavaScript SDK
 
-![CMDOP SDK](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/refs/heads/main/assets/cmdop_sdkjs.webp)
+![CMDOP SDK](https://raw.githubusercontent.com/markolofsen/assets/main/libs/cmdop_sdk_js.webp)
 
 **Your OS. Online.** Full access to your machines from anywhere — terminal, files, browser, AI agent.
 
