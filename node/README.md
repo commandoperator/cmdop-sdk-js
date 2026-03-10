@@ -1,6 +1,6 @@
 # @cmdop/node
 
-![CMDOP SDK](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/static/cmdop_sdkjs.webp)
+![CMDOP SDK](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/refs/heads/main/assets/cmdop_sdkjs.webp)
 
 Node.js SDK for CMDOP agent interaction via gRPC.
 
