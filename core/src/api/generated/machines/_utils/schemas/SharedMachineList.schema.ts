@@ -17,7 +17,7 @@ export const SharedMachineListSchema = z.object({
   machine: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i),
   machine_name: z.string(),
   expires_at: z.string().datetime({ offset: true }).nullable().optional(),
-  views_count: z.int().min(0.0).max(2147483647.0).optional(),
+  views_count: z.number().int().min(0.0).max(2147483647.0).optional(),
   is_active: z.boolean().optional(),
   is_expired: z.boolean(),
   is_valid: z.boolean(),

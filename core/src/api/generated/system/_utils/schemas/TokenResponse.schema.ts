@@ -17,7 +17,7 @@ export const TokenResponseSchema = z.object({
   access_token: z.string(),
   refresh_token: z.string(),
   token_type: z.string().optional(),
-  expires_in: z.int(),
+  expires_in: z.number().int(),
   scope: z.string().optional(),
   workspace_id: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i),
   workspace_name: z.string(),

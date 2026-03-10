@@ -1,5 +1,7 @@
 # @cmdop/node
 
+![CMDOP SDK](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/static/cmdop_sdkjs.webp)
+
 Node.js SDK for CMDOP agent interaction via gRPC.
 
 ## Installation
@@ -369,7 +371,7 @@ curl -fsSL cmdop.com/install-cli.sh | bash
 cmdok ssh
 ```
 
-![cmdok ssh](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/assets/cmdok-ssh.gif)
+![cmdok ssh](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/assets/cmdok_ssh.gif)
 
 ## Links
 

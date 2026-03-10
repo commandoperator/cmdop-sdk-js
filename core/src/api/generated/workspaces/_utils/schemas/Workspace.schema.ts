@@ -21,8 +21,8 @@ export const WorkspaceSchema = z.object({
   type: z.nativeEnum(Enums.PatchedWorkspaceRequestType).optional(),
   plan: z.nativeEnum(Enums.PatchedWorkspaceRequestPlan).optional(),
   created_at: z.string().datetime({ offset: true }),
-  member_count: z.int(),
-  machine_count: z.int(),
+  member_count: z.number().int(),
+  machine_count: z.number().int(),
 })
 
 /**

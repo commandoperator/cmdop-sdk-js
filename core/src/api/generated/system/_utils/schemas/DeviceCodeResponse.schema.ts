@@ -17,8 +17,8 @@ export const DeviceCodeResponseSchema = z.object({
   device_code: z.string(),
   user_code: z.string(),
   verification_uri: z.string(),
-  expires_in: z.int(),
-  interval: z.int(),
+  expires_in: z.number().int(),
+  interval: z.number().int(),
 })
 
 /**

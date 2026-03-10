@@ -1,5 +1,7 @@
 # @cmdop/bot
 
+![CMDOP Bot](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/static/cmdop_bot.webp)
+
 Multi-channel bot framework for [CMDOP](https://cmdop.com) — run `/exec`, `/agent`, `/skills`, and `/files` commands from Telegram, Discord, and Slack.
 
 ```

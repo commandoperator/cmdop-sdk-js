@@ -20,13 +20,13 @@ export const SharedMachineSchema = z.object({
   machine_hostname: z.string(),
   machine_status: z.string(),
   expires_at: z.string().datetime({ offset: true }).nullable().optional(),
-  views_count: z.int(),
+  views_count: z.number().int(),
   last_viewed_at: z.string().datetime({ offset: true }).nullable(),
   is_active: z.boolean().optional(),
   is_expired: z.boolean(),
   is_valid: z.boolean(),
-  active_sessions_count: z.int(),
-  created_by: z.int(),
+  active_sessions_count: z.number().int(),
+  created_by: z.number().int(),
   created_at: z.string().datetime({ offset: true }),
 })
 

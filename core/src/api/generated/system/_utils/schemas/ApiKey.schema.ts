@@ -16,7 +16,7 @@ export const ApiKeySchema = z.object({
   name: z.string(),
   key_prefix: z.string(),
   last_used: z.string().datetime({ offset: true }).nullable(),
-  created_by: z.int().nullable(),
+  created_by: z.number().int().nullable(),
   created_by_email: z.string(),
   created_at: z.string().datetime({ offset: true }),
 })

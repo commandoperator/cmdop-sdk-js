@@ -1,5 +1,7 @@
 # @cmdop/core
 
+![CMDOP SDK](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/static/cmdop_sdkjs.webp)
+
 Shared TypeScript types, interfaces, and configuration for the CMDOP SDK.
 
 ## Installation

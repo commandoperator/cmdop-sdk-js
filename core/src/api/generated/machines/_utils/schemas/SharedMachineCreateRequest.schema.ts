@@ -10,7 +10,7 @@ import { z } from 'zod'
  * Serializer for creating a new share.
  */
 export const SharedMachineCreateRequestSchema = z.object({
-  expires_in_hours: z.int().min(1.0).max(720.0).nullable().optional(),
+  expires_in_hours: z.number().int().min(1.0).max(720.0).nullable().optional(),
 })
 
 /**

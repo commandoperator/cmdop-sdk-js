@@ -1,6 +1,6 @@
 # CMDOP JavaScript SDK
 
-![CMDOP Architecture](https://cmdop.com/images/architecture/vs-personal-agent.png)
+![CMDOP SDK](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/static/cmdop_sdkjs.webp)
 
 **Your OS. Online.** Full access to your machines from anywhere — terminal, files, browser, AI agent.
 

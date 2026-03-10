@@ -10,7 +10,7 @@ import { z } from 'zod'
  * Basic user info for invitation inviter.
  */
 export const InvitedBySchema = z.object({
-  id: z.int(),
+  id: z.number().int(),
   email: z.email(),
   first_name: z.string(),
   last_name: z.string(),

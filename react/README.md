@@ -1,6 +1,6 @@
 # @cmdop/react
 
-![CMDOP Architecture](https://cmdop.com/images/architecture/vs-personal-agent.png)
+![CMDOP SDK](https://raw.githubusercontent.com/commandoperator/cmdop-sdk-js/main/static/cmdop_sdkjs.webp)
 
 React hooks and components for browser-based CMDOP agent interaction.
 
